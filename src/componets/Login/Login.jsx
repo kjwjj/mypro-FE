@@ -1,7 +1,7 @@
 import Navbar from "../Navbars/Navbar";
 import Footer from "../Footers/Footer";
 import "./index.css"
-import logo from "../../assets/img/blue.png"
+import logo from "../../assets/img/house.png"
 
 function Login() {
   return (
@@ -20,9 +20,9 @@ function Login() {
               <span />
               <span />
             </div>
-            <div className="container pt-lg-7">
+            <div className="container pt-lg-0">
               {/* 로고 전용 row */}
-              <div className="row justify-content-center mb-4">
+              <div className="row justify-content-center mb-2">
                 <div className="col-auto text-center">
                   <img
                     src={logo}

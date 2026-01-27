@@ -1,10 +1,18 @@
+import React from "react";
+import logo from "../../assets/img/house.png";
+
 function Navbar() {
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-      <div className="container">
+    <nav className="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" style={{ height: "70px" }}>
+      <div className="container d-flex align-items-center" style={{ height: "100%" }}>
         {/* 로고 */}
         <a className="navbar-brand" href="/">
-          MyPro
+          <img
+            src={logo}
+            alt="MyPro Logo"
+            style={{ height: "80px", objectFit: "contain" }}
+          />
+          houseTalk
         </a>
 
         {/* 모바일 토글 */}

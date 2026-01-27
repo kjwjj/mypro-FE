@@ -59,9 +59,9 @@ function ServiceSection() {
       <Container>
         <Row className="text-center mb-5">
           <Col>
-            <h2 className="display-4">MyPro 서비스 특징</h2>
+            <h2 className="display-4">확인 편한 부동산 뉴스</h2>
             <p className="lead text-muted">
-              복잡한 이사, 이제 AI로 간단하게
+              뉴스와 공지사항 확인
             </p>
           </Col>
         </Row>
