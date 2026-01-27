@@ -1,0 +1,55 @@
+/* 소셜 로그인 영역 아래 여백 최소화 */
+.card-header {
+  padding-bottom: 0.75rem !important;
+}
+
+/* card-body 위쪽 패딩 최소화 */
+.card-body {
+  padding-top: 0.75rem !important;
+}
+
+/* OR 텍스트 위아래 여백 완전 최소 */
+.social-divider {
+  margin-top: 0 !important;
+  margin-bottom: 0.25rem !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+.social-login-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* 공통 */
+.social-bar {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Google */
+.social-bar.google {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  color: #444;
+}
+
+/* Naver */
+.social-bar.naver {
+  background: #03c75a;
+  color: #fff;
+}
+
+/* Kakao */
+.social-bar.kakao {
+  background: #fee500;
+  color: #3c1e1e;
+}
