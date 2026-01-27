@@ -8,7 +8,7 @@ import RecommendSection from "../../Sections/RecommendSection";
 function Home() {
   const mainRef = useRef(null);
 
-  useEffect(() => {
+  useEffect(() => { //스크롤제어
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
     if (mainRef.current) mainRef.current.scrollTop = 0;

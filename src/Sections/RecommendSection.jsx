@@ -10,7 +10,7 @@ import Login from "../componets/Login/Login"; // 필요 없으면 지워도 됨
 function Home() {
   const mainRef = useRef(null);
 
-  useEffect(() => {
+  useEffect(() => { // 스크롤제어
     document.documentElement.scrollTop = 0;
     document.scrollingElement.scrollTop = 0;
     if (mainRef.current) {

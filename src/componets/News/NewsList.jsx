@@ -65,7 +65,10 @@ function NewsList() {
                   <Card
                     key={news.id}
                     className="shadow-sm border-0 mb-3"
-                    style={{ height: "250px", overflow: "hidden", display: "flex", flexDirection: "column" }}
+                    style={{ height: "250px", 
+                      overflow: "hidden", 
+                      display: "flex", 
+                      flexDirection: "column" }}
                   >
                     <CardBody style={{ flex: "1", overflowY: "auto" }}>
                       <div className="d-flex justify-content-between align-items-center mb-2">
@@ -73,7 +76,7 @@ function NewsList() {
                         <small className="text-muted">{news.date}</small>
                       </div>
                       <h5 className="mb-2">{news.title}</h5>
-                      <p className="text-muted mb-2">{news.summary}</p>
+                      <p style={{ color: "black", marginBottom: "0.5rem" }} >{news.summary}</p>
                       <a href={news.link} className="text-primary fw-semibold">기사 보러가기 →</a>
                     </CardBody>
                   </Card>
