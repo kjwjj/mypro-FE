@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import Home from './componets/Home/Home'
 import { Routes, Route } from "react-router-dom";
@@ -12,26 +10,27 @@ import NewsList from './componets/News/NewsList'
 import BoardDetail from './componets/Boards/BoardDetail'
 import Agree from './componets/SignUp/Agree'
 import Loan from './componets/Loan/Loan'
+import Service from './componets/Question/Service'
+
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
+    <div className="app-wrapper">
       <Navbar />
-
-       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/newslist" element={<NewsList />} />
-        <Route path="/boardlist" element={<BoardList />} />
-        <Route path="/boardlist/:id" element={<BoardDetail />} />
-        <Route path="/signup" element={<Agree />} />
-        <Route path="/loan" element={<Loan />} />
-      </Routes>
-
+      <main className="flex-fill">
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/newslist" element={<NewsList />} />
+          <Route path="/boardlist" element={<BoardList />} />
+          <Route path="/boardlist/:id" element={<BoardDetail />} />
+          <Route path="/signup" element={<Agree />} />
+          <Route path="/loan" element={<Loan />} />
+          <Route path="/service" element={<Service />} />
+        </Routes>
+      </main>
       <Footer />
-    </>
+    </div>
   );
 }
 
-export default App
+export default App;

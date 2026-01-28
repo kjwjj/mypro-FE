@@ -38,7 +38,7 @@ function Navbar() {
               <a className="nav-link" href="/boardlist">게시판</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="/">문의하기</a>
+              <a className="nav-link" href="/service">문의하기</a>
             </li>
             <li className="nav-item">
               <a className="nav-link" href="/">About</a>
