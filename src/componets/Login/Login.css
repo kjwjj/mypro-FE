@@ -8,6 +8,8 @@
   padding-top: 0.75rem !important;
 }
 
+
+
 /* OR 텍스트 위아래 여백 완전 최소 */
 .social-divider {
   margin-top: 0 !important;
@@ -52,4 +54,25 @@
 .social-bar.kakao {
   background: #fee500;
   color: #3c1e1e;
+}
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Argon section 높이 강제 제어 */
+.section-shaped {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+/* 로고 크기 제한 */
+.login-page img {
+  max-height: 200px;
 }

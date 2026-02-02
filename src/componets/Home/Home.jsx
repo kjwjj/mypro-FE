@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
 
-import HeroSection from "../../Sections/HeroSection";
-import ServiceSection from "../../Sections/ServiceSection";
-import RecommendSection from "../../Sections/RecommendSection";
+import HeroSection from "../Sections/HeroSection";
+import ServiceSection from "../Sections/ServiceSection";
+import RecommendSection from "../Sections/RecommendSection";
 
 
 function Home() {
@@ -19,7 +19,6 @@ function Home() {
       <main ref={mainRef}>
         <HeroSection />
         <ServiceSection />
-        <RecommendSection />
       </main>
     </>
   );

@@ -252,73 +252,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import { Autoplay, Navigation } from "swiper/modules";
-
-/* 로그인 카드 컴포넌트 */
-function LoginCard() {
-  const navigate = useNavigate();
-
-  return (
-    <Card className="shadow border-0">
-      <CardBody className="px-4 py-4">
-        <div className="text-center mb-3">
-          <h5 className="mb-0">로그인</h5>
-        </div>
-
-        <Form>
-          <FormGroup className="mb-2">
-            <Input type="email" placeholder="이메일" />
-          </FormGroup>
-          <FormGroup className="mb-3">
-            <Input type="password" placeholder="비밀번호" />
-          </FormGroup>
-
-          <Button color="primary" block onClick={() => navigate("/login")}>
-            로그인
-          </Button>
-
-          <Button
-            color="light"
-            block
-            className="mt-2"
-            onClick={() => navigate("/signup")}
-          >
-            회원가입
-          </Button>
-
-          <Row className="mt-3">
-            <Col xs="4" className="pe-1">
-              <Button
-                style={{ backgroundColor: "#EA4335", color: "#fff" }}
-                block
-                size="sm"
-              >
-                Google
-              </Button>
-            </Col>
-            <Col xs="4" className="px-1">
-              <Button
-                style={{ backgroundColor: "#03C75A", color: "#fff" }}
-                block
-                size="sm"
-              >
-                N 네이버
-              </Button>
-            </Col>
-            <Col xs="4" className="ps-1">
-              <Button
-                style={{ backgroundColor: "#FEE500", color: "#000" }}
-                block
-                size="sm"
-              >
-                K 카카오
-              </Button>
-            </Col>
-          </Row>
-        </Form>
-      </CardBody>
-    </Card>
-  );
-}
+import LoginForm from "../LoginForm/LoginForm";
 
 function HeroSection() {
   // 슬라이드 데이터
@@ -349,7 +283,7 @@ function HeroSection() {
   return (
     <>
       {/* HERO 영역 */}
-      <section style={{ position: "relative",  height: "calc(100vh - 30px)", overflow:"hidden" }}>
+      <section style={{ position: "relative",  height: "calc(100svh - 30px)", overflow:"hidden" }}>
         {/* 배경 슬라이드 */}
         <Swiper
           modules={[Navigation, Autoplay]}
@@ -401,24 +335,24 @@ function HeroSection() {
         </Swiper>
 
         {/* PC용 로그인 카드 (오버레이) */}
-        <div
+        {/* <div
           className="d-none d-lg-block"
           style={{
             position: "absolute",
             top: "50%",
             right: "5%",
-            transform: "translateY(-50%)",
+            transform: "translateY(-50%) scale(0.9)",
             width: "360px",
-            zIndex: 10,
+            zIndex: 10, //레이어 순서 숫자 클수록 위에 표시
           }}
         >
-          <LoginCard />
-        </div>
+          <LoginForm />
+        </div> */}
       </section>
 
       {/* 모바일용 로그인 카드 (아래로 내려옴) */}
       <div className="d-block d-lg-none px-3 my-4">
-        <LoginCard />
+        <LoginForm />
       </div>
     </>
   );

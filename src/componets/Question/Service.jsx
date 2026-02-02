@@ -40,18 +40,11 @@ function Service() {
       {/* 🔹 상단 큰 타이틀 영역 */}
       <div className="py-5 text-center">
         <h1 className="font-weight-bold">{getTitle()}</h1>
-        <p className="text-muted mt-2">
-          궁금한 점이 있다면 언제든지 확인해보세요
-        </p>
       </div>
 
       {/* 🔹 탭 영역 */}
-      <Container>
-        <Nav
-          tabs
-          className="justify-content-between text-center"
-          style={{ marginTop: "-1px" }}
-        >
+      <Container fluid>
+        <Nav tabs className="text-center w-100">
           <NavItem className="flex-fill">
             <NavLink
               className={classnames("py-3", {
@@ -88,7 +81,6 @@ function Service() {
             </NavLink>
           </NavItem>
         </Nav>
-
         {/* 🔹 컨텐츠 */}
         <div className="py-5">{renderComponent()}</div>
       </Container>

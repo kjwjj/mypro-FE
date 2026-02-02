@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from "react";
 
 // 네 프로젝트 Navbar / Footer
-import Navbar from "../componets/Navbars/Navbar";
-import Footer from "../componets/Footers/Footer";
+import Navbar from "../../componets/Navbars/Navbar";
+import Footer from "../../componets/Footers/Footer";
 
 // 홈에서 보여줄 섹션들 (지금은 최소)
-import Login from "../componets/Login/Login"; // 필요 없으면 지워도 됨
+import Login from "../../componets/Login/Login"; // 필요 없으면 지워도 됨
 
 function Home() {
   const mainRef = useRef(null);

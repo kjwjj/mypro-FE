@@ -1,0 +1,46 @@
+/* 화면 전체 중앙 정렬 */
+.fullscreen-page {
+  height: 100vh;            /* min-height ❌ */
+  display: flex;
+  align-items: center;
+ background-color: #f2f2f2; /* 네이버 느낌 회색 */
+}
+
+/* Container 상단 여백 줄이기 */
+.fullscreen-page .container {
+  padding-top: 20px !important;
+  padding-bottom: 20px;
+}
+
+/* 컨테이너 위아래 여백 제거 */
+.agree-container {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* 로고 크기 줄이기 */
+.agree-logo {
+  max-width: 200px;
+}
+
+/* 카드 자체 높이 줄이기 */
+.agree-card {
+  padding: 0.5rem;
+}
+
+/* 약관 박스 높이 줄이고 스크롤 */
+.agree-box {
+  height: 60px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 6px 8px;
+  font-size: 12px;
+  background: #fafafa;
+  margin-top: 4px;
+}
+
+/* 체크박스 간격 압축 */
+.form-check {
+  margin-bottom: 4px;
+}
