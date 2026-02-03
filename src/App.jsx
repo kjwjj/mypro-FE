@@ -13,6 +13,8 @@ import Loan from './componets/Loan/Loan'
 import Service from './componets/Question/Service'
 import DashBoard from './componets/Admin/DashBoard';
 import SignUpForm from './componets/SignUpForm/SingUpForm';
+import MyPageForm from './componets/MyPage/MyPageForm';
+
 function App() {
 
   const location = useLocation();
@@ -41,6 +43,7 @@ function App() {
           <Route path="/signup/form" element={<SignUpForm />} />
           <Route path="/loan" element={<Loan />} />
           <Route path="/service" element={<Service />} />
+          <Route path="/mypage" element={<MyPageForm />} />
         </Routes>
       </main>
 
