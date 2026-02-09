@@ -1,6 +1,16 @@
-import React, { useState } from "react";
+import React, { useState,useEffect, useRef } from "react";
 
 function Faq() {
+  const mainRef = useRef(null);
+
+  useEffect(() => { // 스크롤제어
+    document.documentElement.scrollTop = 0;
+    document.scrollingElement.scrollTop = 0;
+    if (mainRef.current) {
+      mainRef.current.scrollTop = 0;
+    }
+  }, []);
+
   const [openIndexes, setOpenIndexes] = useState([]);
 
   const faqList = [
@@ -16,7 +26,7 @@ function Faq() {
       q: "문의한 내용은 어디서 확인할 수 있나요?",
       a: "문의하기 페이지에서 작성한 문의 내역과 답변 상태를 확인하실 수 있습니다.",
     },
-    
+
   ];
 
   const toggleFaq = (idx) => {

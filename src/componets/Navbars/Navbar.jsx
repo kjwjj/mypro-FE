@@ -50,10 +50,39 @@ function Navbar() {
 
         <div className="collapse navbar-collapse" id="navbarArgon">
           <ul className="navbar-nav me-auto">
+            {/* 🔹 서비스 드롭다운 */}
+            <li className="nav-item dropdown">
+              <a
+                className="nav-link dropdown-toggle"
+                href="#"
+                id="serviceDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                서비스
+              </a>
+              <ul className="dropdown-menu" aria-labelledby="serviceDropdown">
+                <li>
+                  <Link className="dropdown-item" to="/loan">
+                    대출
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/listing">
+                    매물
+                  </Link>
+                </li>
+                <li>
+                  <Link className="dropdown-item" to="/recommend">
+                    주거 추천
+                  </Link>
+                </li>
+              </ul>
+            </li>
             <li className="nav-item"><Link className="nav-link" to="/newslist">뉴스</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/loan">대출</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/boardlist">게시판</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/service">문의하기</Link></li>
+            <li className="nav-item"><Link className="nav-link" to="/service">고객지원</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/about">About</Link></li>
           </ul>
           <ul className="navbar-nav ms-auto">

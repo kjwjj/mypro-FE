@@ -1,0 +1,25 @@
+/* 네브바 + 푸터 제외한 전체 화면 */
+.map-page {
+  display: flex;
+  height: calc(100vh - 120px); /* 네브바 높이에 맞게 조절 */
+}
+
+/* 지도 영역 */
+.map-area {
+  flex: 7;
+  height: 100%;
+}
+
+/* 필터 영역 */
+.filter-area {
+  flex: 3;
+  padding: 20px;
+  border-left: 1px solid #ddd;
+  background-color: #fff;
+}
+
+/* ⭐ 지도 div가 부모 100% 먹도록 */
+#map {
+  width: 100%;
+  height: 100%;
+}

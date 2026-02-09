@@ -1,13 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Nav, NavItem, NavLink } from "reactstrap";
 import classnames from "classnames";
+import { useSearchParams } from "react-router-dom";
 
 import Faq from "./Faq";
 import Notice from "./Notice";
 import Qna from "./Qna";
 
 function Service() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tabParam = searchParams.get("tab");
+
   const [activeTab, setActiveTab] = useState("faq");
+
+  // 🔹 URL → 탭 동기화
+  useEffect(() => {
+    if (tabParam === "faq" || tabParam === "qna" || tabParam === "notice") {
+      setActiveTab(tabParam);
+    }
+  }, [tabParam]);
+
+  const changeTab = (tab) => {
+    setActiveTab(tab);
+    setSearchParams({ tab });
+  };
 
   const renderComponent = () => {
     switch (activeTab) {
@@ -37,20 +53,16 @@ function Service() {
 
   return (
     <div style={{ marginTop: "80px" }}>
-      {/* 🔹 상단 큰 타이틀 영역 */}
       <div className="py-5 text-center">
         <h1 className="font-weight-bold">{getTitle()}</h1>
       </div>
 
-      {/* 🔹 탭 영역 */}
       <Container fluid>
         <Nav tabs className="text-center w-100">
           <NavItem className="flex-fill">
             <NavLink
-              className={classnames("py-3", {
-                active: activeTab === "faq",
-              })}
-              onClick={() => setActiveTab("faq")}
+              className={classnames("py-3", { active: activeTab === "faq" })}
+              onClick={() => changeTab("faq")}
               style={{ cursor: "pointer" }}
             >
               자주 묻는 질문
@@ -59,10 +71,8 @@ function Service() {
 
           <NavItem className="flex-fill">
             <NavLink
-              className={classnames("py-3", {
-                active: activeTab === "qna",
-              })}
-              onClick={() => setActiveTab("qna")}
+              className={classnames("py-3", { active: activeTab === "qna" })}
+              onClick={() => changeTab("qna")}
               style={{ cursor: "pointer" }}
             >
               문의하기
@@ -71,17 +81,15 @@ function Service() {
 
           <NavItem className="flex-fill">
             <NavLink
-              className={classnames("py-3", {
-                active: activeTab === "notice",
-              })}
-              onClick={() => setActiveTab("notice")}
+              className={classnames("py-3", { active: activeTab === "notice" })}
+              onClick={() => changeTab("notice")}
               style={{ cursor: "pointer" }}
             >
               공지사항
             </NavLink>
           </NavItem>
         </Nav>
-        {/* 🔹 컨텐츠 */}
+
         <div className="py-5">{renderComponent()}</div>
       </Container>
     </div>

@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { Table } from "reactstrap";
 
 function Notice() {
+  const mainRef = useRef(null);
+
+  useEffect(() => { // 스크롤제어
+    document.documentElement.scrollTop = 0;
+    document.scrollingElement.scrollTop = 0;
+    if (mainRef.current) {
+      mainRef.current.scrollTop = 0;
+    }
+  }, []);
+  
   const noticeList = [
     {
       id: 1,

@@ -268,8 +268,8 @@ function HeroSection() {
       id: 2,
       img: "/src/assets/img/moving.jpg",
       title: "대출 비교",
-      desc: "여러 이사업체의 견적을 한 번에 비교하세요",
-      btn: "견적 받기",
+      desc: "조건을 입력하고 대출을 비교 받은세요",
+      btn: "비교 받기",
     },
     {
       id: 3,
