@@ -18,11 +18,14 @@ import Privacy from './componets/Footers/Privacy';
 import Terms from './componets/Footers/Terms';
 import ScrollToTop from './componets/ScrollTop/ScrollTop';
 import MapPage from './componets/Map/MapPage';
+import Recommend from './componets/Recommend/Recommend';
+import AddObject from './componets/Map/AddObject';
 
 function App() {
-
+ const location = useLocation(); // ← 여기서 가져오기
+ 
   // Navbar 숨길 경로들
-  const hideNavbarPaths = ["/login", "/signup", "/signup/form"];
+  const hideNavbarPaths = ["/signup", "/signup/form"];
   const hideNavbar = hideNavbarPaths.includes(location.pathname);
 
   // Footer 숨길 경로들
@@ -50,6 +53,8 @@ function App() {
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/map" element={<MapPage />} />
+          <Route path="/recommend" element={<Recommend />} />
+          <Route path="/addobject" element={<AddObject />} />
         </Routes>
       </main>
 

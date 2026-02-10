@@ -69,7 +69,7 @@ function Navbar() {
                   </Link>
                 </li>
                 <li>
-                  <Link className="dropdown-item" to="/listing">
+                  <Link className="dropdown-item" to="/map">
                     매물
                   </Link>
                 </li>

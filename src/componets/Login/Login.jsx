@@ -8,17 +8,6 @@ function Login() {
     <>
       <main className="login-page">
         <section className="section section-shaped">
-          {/* Argon 배경 */}
-          <div className="shape shape-style-1 bg-gradient-default">
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-            <span />
-          </div>
           <div className="container pt-lg-0">
             {/* 로고 전용 row */}
             <div className="row justify-content-center mb-2">

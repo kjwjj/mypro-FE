@@ -191,6 +191,23 @@ function Loan() {
                     </div>
                   </>
                 )}
+                {/* 🔴 추천 상품이 없을 때 */}
+                {recommended.length === 0 && results.length > 0 && (
+                  <div
+                    style={{
+                      marginTop: "2rem",
+                      padding: "1.5rem",
+                      textAlign: "center",
+                      color: "#666",
+                      border: "1px dashed #ccc",
+                      borderRadius: "8px",
+                    }}
+                  >
+                    ❌ <strong>추천 대출이 없습니다.</strong>
+                    <br />
+                    입력하신 대출 금액 또는 기간을 줄여서 다시 시도해 주세요.
+                  </div>
+                )}
               </CardBody>
             </Card>
           </Col>
