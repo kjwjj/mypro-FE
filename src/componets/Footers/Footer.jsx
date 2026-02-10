@@ -31,7 +31,7 @@ function Footer() {
             <h6 className="fw-bold">서비스</h6>
             <ul className="list-unstyled small">
               <li><Link to="/loan" className="text-muted text-decoration-none">대출 </Link></li>
-              <li><Link to="/loan" className="text-muted text-decoration-none"> 매물 </Link></li>
+              <li><Link to="/map" className="text-muted text-decoration-none"> 매물 </Link></li>
               <li><a href="#" className="text-muted text-decoration-none">주거 분석</a></li>
             </ul>
           </div>

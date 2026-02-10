@@ -23,13 +23,13 @@ import AddObject from './componets/Map/AddObject';
 
 function App() {
  const location = useLocation(); // ← 여기서 가져오기
- 
+
   // Navbar 숨길 경로들
-  const hideNavbarPaths = ["/signup", "/signup/form"];
+  const hideNavbarPaths = ["/login", "/signup", "/signup/form"];
   const hideNavbar = hideNavbarPaths.includes(location.pathname);
 
   // Footer 숨길 경로들
-  const hideFooterPaths = ["/signup", "/signup/form"];
+  const hideFooterPaths = ["/login", "/signup", "/signup/form"];
   const hideFooter = hideFooterPaths.includes(location.pathname);
 
   return (
