@@ -351,9 +351,9 @@ function HeroSection() {
       </section>
 
       {/* 모바일용 로그인 카드 (아래로 내려옴) */}
-      <div className="d-block d-lg-none px-3 my-4">
+      {/* <div className="d-block d-lg-none px-3 my-4">
         <LoginForm />
-      </div>
+      </div> */}
     </>
   );
 }

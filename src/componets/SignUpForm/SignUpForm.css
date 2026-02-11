@@ -123,3 +123,28 @@
   background-color: #ccc;
   cursor: not-allowed;
 }
+
+
+.auth-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.timer-text {
+  flex: 1;
+  font-size: 13px;
+  color: #666;
+}
+
+.signup-btn.small {
+  height: 32px;
+  padding: 0 10px;
+  font-size: 13px;
+}
+
+.signup-btn.outline {
+  background: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+}

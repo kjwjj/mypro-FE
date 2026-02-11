@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import "./SignUpForm.css";
 import logo from "../../assets/img/house.png";
 
-function SignUpForm() {
+function EmailAuthDemo() {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -48,56 +48,29 @@ function SignUpForm() {
     return () => clearInterval(timer);
   }, [codeSent, timeLeft, verified]);
 
-  const handleSendCode = async () => {
+  const handleSendCode = () => {
     if (!form.email) {
       alert("이메일을 입력해주세요.");
       return;
     }
-
-    try {
-      await fetch("http://localhost:8080/api/auth/email/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: form.email }),
-      });
-
-      setCodeSent(true);
-      setTimeLeft(180);
-      alert("인증 코드가 발송되었습니다.");
-    } catch (e) {
-      alert("인증 코드 발송 실패");
-    }
+    setCodeSent(true);
+    setTimeLeft(180);
+    alert("인증 코드 발송 (시뮬레이션)");
   };
 
-
-  const handleVerify = async () => {
+  const handleVerify = () => {
     if (!authCode || authCode.length !== 6) {
       alert("인증번호를 입력해주세요.");
       return;
     }
 
-    try {
-      const res = await fetch("http://localhost:8080/api/auth/email/verify", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: form.email,
-          code: authCode,
-        }),
-      });
+    // 실제로는 서버 검증 자리
+    alert("인증 완료!");
+    setVerified(true);
 
-      if (!res.ok) {
-        alert("인증번호가 올바르지 않습니다.");
-        return;
-      }
-
-      alert("이메일 인증 완료!");
-      setVerified(true);
-      setCodeSent(false);
-      setAuthCode("");
-    } catch (e) {
-      alert("인증 확인 실패");
-    }
+    // 인증 UI 정리
+    setCodeSent(false);
+    setAuthCode("");
   };
 
   const formatTime = (sec) => {
@@ -118,88 +91,39 @@ function SignUpForm() {
     form.phone &&
     verified;
 
-  // const handleSignUp = async () => {
-  //   if (!isValid) return;
+  const handleSignUp = async () => {
+    if (!isValid) return;
 
-  //   try {
-  //     const response = await fetch(
-  //       "http://localhost:8080/api/users/signup/form",
-  //       {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({
-  //           email: form.email,
-  //           password: form.password,
-  //           name: form.name,
-  //           birth: form.birth,
-  //           gender: form.gender,
-  //           phone: form.phone,
-  //         }),
-  //       }
-  //     );
-
-  //     const data = await response.json();
-  //     if (!response.ok) {
-  //       alert("회원가입 실패: " + (data.message || "알 수 없는 오류"));
-  //       return;
-  //     }
-
-  //     alert("회원가입 성공!");
-  //     navigate("/login");
-  //   } catch (error) {
-  //     console.error("회원가입 오류:", error);
-  //     alert("회원가입 중 오류가 발생했습니다.");
-  //   }
-  // };
-
-const handleSignUp = async () => {
-  // 이메일 인증 안 됐을 때
-  if (!verified) {
-    alert("이메일 인증을 완료해주세요.");
-    return;
-  }
-
-  // 비밀번호와 확인이 다를 때
-  if (form.password !== form.passwordConfirm) {
-    alert("비밀번호와 비밀번호 확인이 다릅니다.");
-    return;
-  }
-
-  // 다른 필수 입력 체크
-  if (!form.email || !form.password || !form.name || !form.birth || !form.gender || !form.phone) {
-    alert("모든 필수 항목을 입력해주세요.");
-    return;
-  }
-
-  try {
-    const response = await fetch(
-      "http://localhost:8080/api/users/signup/form",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      }
-    );
-
-    let data = {};
     try {
-      data = await response.json(); // JSON 파싱
-    } catch (e) {
-      data.message = "알 수 없는 오류";
-    }
+      const response = await fetch(
+        "http://localhost:8080/api/users/signup/form",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: form.email,
+            password: form.password,
+            name: form.name,
+            birth: form.birth,
+            gender: form.gender,
+            phone: form.phone,
+          }),
+        }
+      );
 
-    if (!response.ok) {
-      alert("회원가입 실패: " + (data.message || "알 수 없는 오류"));
-      return;
-    }
+      const data = await response.json();
+      if (!response.ok) {
+        alert("회원가입 실패: " + (data.message || "알 수 없는 오류"));
+        return;
+      }
 
-    alert("회원가입 성공!");
-    navigate("/login");
-  } catch (error) {
-    console.error("회원가입 오류:", error);
-    alert("회원가입 중 오류가 발생했습니다.");
-  }
-};
+      alert("회원가입 성공!");
+      navigate("/login");
+    } catch (error) {
+      console.error("회원가입 오류:", error);
+      alert("회원가입 중 오류가 발생했습니다.");
+    }
+  };
 
   return (
     <div className="signup-background">
@@ -351,6 +275,7 @@ const handleSignUp = async () => {
         {/* 가입하기 버튼 */}
         <button
           className="signup-btn"
+          disabled={!isValid}
           onClick={handleSignUp}
         >
           가입하기
@@ -360,4 +285,4 @@ const handleSignUp = async () => {
   );
 }
 
-export default SignUpForm;
+export default EmailAuthDemo;

@@ -138,6 +138,7 @@ function LoginForm() {
         body: JSON.stringify(form),
       });
 
+      // 응답이 실패면 에러 처리
       if (!response.ok) {
         const errData = await response.json();
         throw new Error(errData || "로그인 실패");
@@ -148,6 +149,8 @@ function LoginForm() {
 
       // ✅ 로그인 성공 시 이름과 토큰(localStorage 저장)
       localStorage.setItem("userName", data.name);
+      // ✅ 로그인 성공 시 이름과 토큰(localStorage 저장)
+      if (data.userName) localStorage.setItem("userName", data.userName);
       if (data.token) localStorage.setItem("token", data.token);
 
       navigate("/"); // 로그인 성공 후 이동

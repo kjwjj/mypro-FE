@@ -20,16 +20,16 @@ import ScrollToTop from './componets/ScrollTop/ScrollTop';
 import MapPage from './componets/Map/MapPage';
 import Recommend from './componets/Recommend/Recommend';
 import AddObject from './componets/Map/AddObject';
-
+import EmailAuthDemo from './componets/SignUpForm/EmailAuthDemo';
 function App() {
  const location = useLocation(); // ← 여기서 가져오기
 
   // Navbar 숨길 경로들
-  const hideNavbarPaths = ["/login", "/signup", "/signup/form"];
+  const hideNavbarPaths = ["/login", "/signup", "/signup/form", "/demo"];
   const hideNavbar = hideNavbarPaths.includes(location.pathname);
 
   // Footer 숨길 경로들
-  const hideFooterPaths = ["/login", "/signup", "/signup/form"];
+  const hideFooterPaths = ["/login", "/signup", "/signup/form", "/demo"];
   const hideFooter = hideFooterPaths.includes(location.pathname);
 
   return (
@@ -55,6 +55,7 @@ function App() {
           <Route path="/map" element={<MapPage />} />
           <Route path="/recommend" element={<Recommend />} />
           <Route path="/addobject" element={<AddObject />} />
+          <Route path="/demo" element={<EmailAuthDemo />} />
         </Routes>
       </main>
 
