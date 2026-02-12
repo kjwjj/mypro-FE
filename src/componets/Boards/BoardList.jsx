@@ -19,17 +19,18 @@ function BoardList() {
     { id: 3, title: "이사 견적 관련 질문", author: "홍길동", date: "2026-01-26", views: 12 },
     { id: 2, title: "AI 추천 정확도 문의", author: "김철수", date: "2026-01-25", views: 30 },
     { id: 1, title: "서비스 오픈 축하합니다!", author: "관리자", date: "2026-01-24", views: 102 },
+    
   ];
 
   return (
     <main className="board-page">
       <section className="section section-shaped section-lg">
-        <div className="shape shape-style-1 bg-gradient-default">
+        {/* <div className="shape shape-style-1 bg-gradient-default">
           <span />
           <span />
           <span />
           <span />
-        </div>
+        </div> */}
 
         <Container className="pt-lg-7">
           <Row className="justify-content-center">

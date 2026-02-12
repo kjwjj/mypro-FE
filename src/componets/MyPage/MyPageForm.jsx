@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Container, Nav, NavItem, NavLink } from "reactstrap";
 import classnames from "classnames";
+import axios from "axios";
 
 // 내 정보에 들어갈 컴포넌트들
 // 정보/게시판/문의함/요금제 (+ 관심같은것들을 넣을지 뺄지)
@@ -17,6 +18,32 @@ function MyPageForm() {
   const [verified, setVerified] = useState(false);
   const [password, setPassword] = useState("");
 
+
+  // ✅ 비밀번호 검증 요청
+  const handleVerify = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+
+      await axios.post(
+        "http://localhost:8080/api/users/verify-password",
+        { password },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setVerified(true);
+    } catch (err) {
+      alert("비밀번호가 일치하지 않습니다.");
+    }
+  };
 
   const renderComponent = () => {
     switch (activeTab) {
@@ -48,7 +75,7 @@ function MyPageForm() {
     }
   };
 
-  // 🔹 아직 확인 안 했으면 → 이 화면만 보여줌
+  // 🔹 아직 비밀번호 확인 안 했으면 → 재확인 화면만
   if (!verified) {
     return (
       <div style={{ marginTop: "120px" }} className="text-center">
@@ -63,16 +90,9 @@ function MyPageForm() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button
-          className="btn btn-primary"
-          onClick={() => setVerified(true)} // 👉 그냥 통과
-        >
+        <button className="btn btn-primary" onClick={handleVerify}>
           확인
         </button>
-
-        <p className="text-muted mt-3" style={{ fontSize: "14px" }}>
-          ※ 현재는 UI 구조만 구현되어 있습니다.
-        </p>
       </div>
     );
   }

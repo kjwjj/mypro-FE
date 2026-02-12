@@ -12,7 +12,7 @@ function Navbar() {
   useEffect(() => {
     const name = localStorage.getItem("userName");
     if (name) setUserName(name);
-  }, []);
+  }, [location]);
 
   useEffect(() => {
     const navbar = document.getElementById("navbarArgon");

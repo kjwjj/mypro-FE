@@ -20,7 +20,9 @@ import ScrollToTop from './componets/ScrollTop/ScrollTop';
 import MapPage from './componets/Map/MapPage';
 import Recommend from './componets/Recommend/Recommend';
 import AddObject from './componets/Map/AddObject';
-import EmailAuthDemo from './componets/SignUpForm/EmailAuthDemo';
+import NotFound from './componets/NotFound/NotFound';
+import FindEmail from './componets/Find/FindEmail'
+import FindPassWord from './componets/Find/FindPassWord'
 function App() {
  const location = useLocation(); // ← 여기서 가져오기
 
@@ -55,7 +57,9 @@ function App() {
           <Route path="/map" element={<MapPage />} />
           <Route path="/recommend" element={<Recommend />} />
           <Route path="/addobject" element={<AddObject />} />
-          <Route path="/demo" element={<EmailAuthDemo />} />
+          <Route path="/find-id" element={<FindEmail />} />
+          <Route path="/forgot-password" element={<FindPassWord />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
 
