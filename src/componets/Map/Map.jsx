@@ -1,56 +1,108 @@
 import { useEffect, useRef } from "react";
 
-function Map({ center }) {
-  const mapRef = useRef(null);      // map div
-  const kakaoMap = useRef(null);    // 지도 객체
-  const markerRef = useRef(null);   // 마커
+function Map({ center, houses }) {
+  const mapRef = useRef(null);
+  const kakaoMap = useRef(null);
+  const markersRef = useRef([]);
+  const infoWindowsRef = useRef([]);
 
-  // 1️⃣ 지도 최초 1회 생성
+  // 지도 최초 생성
   useEffect(() => {
     if (!window.kakao) return;
 
     window.kakao.maps.load(() => {
       const container = mapRef.current;
-
       const options = {
-        center: new window.kakao.maps.LatLng(
-          center.lat,
-          center.lng
-        ),
-        level: 9,
+        center: new window.kakao.maps.LatLng(center.lat, center.lng),
+        level: 5,
       };
-
       kakaoMap.current = new window.kakao.maps.Map(container, options);
     });
   }, []);
 
-  // 2️⃣ center 변경 시 지도 이동
+  // houses 변경 시 마커 생성
+  useEffect(() => {
+    if (!kakaoMap.current || !houses) return;
+
+    // 기존 마커 & infoWindow 제거
+    markersRef.current.forEach((marker) => marker.setMap(null));
+    infoWindowsRef.current.forEach((info) => info.close());
+    markersRef.current = [];
+    infoWindowsRef.current = [];
+
+    houses.forEach((house) => {
+      const geocoder = new window.kakao.maps.services.Geocoder();
+      geocoder.addressSearch(house.address, (result, status) => {
+        if (status === window.kakao.maps.services.Status.OK) {
+          const position = new window.kakao.maps.LatLng(result[0].y, result[0].x);
+
+          const marker = new window.kakao.maps.Marker({
+            map: kakaoMap.current,
+            position,
+            title: house.name,
+          });
+
+          // 인포윈도우 div 생성
+          const content = document.createElement("div");
+          content.style.position = "relative"; // 닫기 버튼 위치 지정
+          content.style.padding = "8px";
+          content.style.maxWidth = "220px";
+          content.style.fontSize = "12px";
+          content.innerHTML = `
+            <strong>${house.name}</strong><br/>
+            ${house.address}<br/>
+            가격: ${house.price}만 | 방: ${house.rooms}개 | ${house.type}<br/>
+          `;
+
+          // 닫기 버튼
+          const closeBtn = document.createElement("button");
+          closeBtn.textContent = "✕";
+          closeBtn.style.cssText = `
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: #ff5c5c;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 18px;
+            text-align: center;
+            padding: 0;
+          `;
+          content.appendChild(closeBtn);
+
+          const infoWindow = new window.kakao.maps.InfoWindow({ content });
+
+          // 마커 클릭 시 infoWindow 열기
+          window.kakao.maps.event.addListener(marker, "click", () => {
+            infoWindowsRef.current.forEach((info) => info.close());
+            infoWindow.open(kakaoMap.current, marker);
+          });
+
+          // 닫기 버튼 클릭
+          closeBtn.addEventListener("click", () => infoWindow.close());
+
+          markersRef.current.push(marker);
+          infoWindowsRef.current.push(infoWindow);
+        }
+      });
+    });
+  }, [houses]);
+
+  // center 변경 시 지도 이동 + 확대
   useEffect(() => {
     if (!kakaoMap.current) return;
 
-    const moveLatLng = new window.kakao.maps.LatLng(
-      center.lat,
-      center.lng
-    );
-
-    // ⭐ 1. 지도 확대
-    kakaoMap.current.setLevel(3, { animate: true }); // 숫자 ↓ = 확대
-
-    // ⭐ 2. 중심 이동
+    const moveLatLng = new window.kakao.maps.LatLng(center.lat, center.lng);
+    kakaoMap.current.setLevel(2, { animate: true });
     kakaoMap.current.panTo(moveLatLng);
-
-    // ⭐ 3. 마커 위치만 변경 (새로 만들지 않음)
-    if (!markerRef.current) {
-      markerRef.current = new window.kakao.maps.Marker({
-        position: moveLatLng,
-        map: kakaoMap.current,
-      });
-    } else {
-      markerRef.current.setPosition(moveLatLng);
-    }
   }, [center]);
 
-  return <div id="map" ref={mapRef} />;
+  return <div id="map" ref={mapRef} style={{ width: "100%", height: "100%" }} />;
 }
 
 export default Map;
