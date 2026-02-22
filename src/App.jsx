@@ -23,6 +23,9 @@ import AddObject from './componets/Map/AddObject';
 import NotFound from './componets/NotFound/NotFound';
 import FindEmail from './componets/Find/FindEmail'
 import FindPassWord from './componets/Find/FindPassWord'
+import AddBoard from './componets/Boards/AddBoard';
+import BoardEdit from './componets/Boards/BoardEdit';
+
 function App() {
  const location = useLocation(); // ← 여기서 가져오기
 
@@ -46,6 +49,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/newslist" element={<NewsList />} />
           <Route path="/boardlist" element={<BoardList />} />
+          <Route path="/addboard" element={<AddBoard />} />
+          <Route path="//board/edit/:id" element={<BoardEdit />} />
           <Route path="/boardlist/:id" element={<BoardDetail />} />
           <Route path="/signup" element={<Agree />} />
           <Route path="/signup/form" element={<SignUpForm />} />

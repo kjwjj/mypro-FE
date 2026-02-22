@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Row,
@@ -8,37 +8,48 @@ import {
   CardBody,
   Table,
   Button,
+  Pagination,
+  PaginationItem,
+  PaginationLink,
 } from "reactstrap";
-import { useNavigate } from "react-router-dom"; // 추가
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./board.css";
 
 function BoardList() {
   const navigate = useNavigate();
 
-  const boardData = [
-    { id: 3, title: "이사 견적 관련 질문", author: "홍길동", date: "2026-01-26", views: 12 },
-    { id: 2, title: "AI 추천 정확도 문의", author: "김철수", date: "2026-01-25", views: 30 },
-    { id: 1, title: "서비스 오픈 축하합니다!", author: "관리자", date: "2026-01-24", views: 102 },
-    
-  ];
+  const [posts, setPosts] = useState([]);
+  const [page, setPage] = useState(0); // ⚠ Spring은 0부터 시작
+  const [totalPages, setTotalPages] = useState(0);
+
+  // ✅ 백엔드에서 데이터 가져오기
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8080/api/boards?page=${page}&size=10`)
+      .then((res) => {
+        setPosts(res.data.content);
+        setTotalPages(res.data.totalPages);
+      })
+      .catch((err) => {
+        console.error("게시글 불러오기 실패", err);
+      });
+  }, [page]);
 
   return (
     <main className="board-page">
-      <section className="section section-shaped section-lg">
-        {/* <div className="shape shape-style-1 bg-gradient-default">
-          <span />
-          <span />
-          <span />
-          <span />
-        </div> */}
-
-        <Container className="pt-lg-7">
+      <section className="section section-lg">
+        <Container className="pt-5">
           <Row className="justify-content-center">
             <Col lg="10">
               <Card className="shadow board-card">
                 <CardHeader className="bg-white d-flex justify-content-between align-items-center">
                   <h4 className="mb-0">공지 / 자유게시판</h4>
-                  <Button color="primary" size="sm">
+                  <Button
+                    color="primary"
+                    size="sm"
+                    onClick={() => navigate("/addboard")}
+                  >
                     글쓰기
                   </Button>
                 </CardHeader>
@@ -55,23 +66,45 @@ function BoardList() {
                       </tr>
                     </thead>
                     <tbody>
-                      {boardData.map((post) => (
+                      {posts.map((post) => (
                         <tr key={post.id}>
                           <td>{post.id}</td>
                           <td
-                            className="board-title"
                             style={{ cursor: "pointer", color: "#007bff" }}
                             onClick={() => navigate(`/boardlist/${post.id}`)}
                           >
                             {post.title}
                           </td>
                           <td>{post.author}</td>
-                          <td>{post.date}</td>
+                          <td>
+                            {post.createdAt
+                              ? post.createdAt.substring(0, 10)
+                              : ""}
+                          </td>
                           <td>{post.views}</td>
                         </tr>
                       ))}
                     </tbody>
                   </Table>
+
+                  {/* ✅ 서버 기반 페이지네이션 */}
+                  <div className="d-flex justify-content-center my-4">
+                    <Pagination>
+                      {[...Array(totalPages)].map((_, index) => (
+                        <PaginationItem
+                          key={index}
+                          active={page === index}
+                        >
+                          <PaginationLink
+                            onClick={() => setPage(index)}
+                          >
+                            {index + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+                    </Pagination>
+                  </div>
+
                 </CardBody>
               </Card>
             </Col>

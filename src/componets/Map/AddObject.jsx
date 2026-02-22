@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-function AddObject({ onClose, onAdded = () => {} }) {
+function AddObject({ onClose, onAdded = () => { } }) {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [price, setPrice] = useState("");
@@ -22,6 +22,11 @@ function AddObject({ onClose, onAdded = () => {} }) {
   };
 
   const handleSubmit = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("로그인이 필요한 서비스입니다.");
+      return;
+    }
     if (!name || !address) {
       alert("매물명과 주소는 필수입니다.");
       return;
@@ -38,7 +43,10 @@ function AddObject({ onClose, onAdded = () => {} }) {
       images.forEach((img) => formData.append("images", img));
 
       await axios.post("http://localhost:8080/api/houses", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`
+        },
       });
 
       alert("매물 등록 완료!");

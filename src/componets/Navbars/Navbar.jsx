@@ -10,8 +10,14 @@ function Navbar() {
 
   // ✅ 페이지 로드 시 localStorage에서 이름 가져오기
   useEffect(() => {
+    const token = localStorage.getItem("token");
     const name = localStorage.getItem("userName");
-    if (name) setUserName(name);
+
+    if (token && name) {
+      setUserName(name);
+    } else {
+      setUserName(null);
+    }
   }, [location]);
 
   useEffect(() => {
@@ -22,10 +28,11 @@ function Navbar() {
   }, [location]);
 
   const handleLogout = () => {
-    localStorage.removeItem("userName");
     localStorage.removeItem("token");
-    setUserName(null);
-    navigate("/login");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("role");
+    navigate("/");
   };
 
   return (

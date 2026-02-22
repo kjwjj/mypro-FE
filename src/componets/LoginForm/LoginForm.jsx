@@ -43,11 +43,10 @@ function LoginForm() {
       console.log("로그인 성공");
 
       // ✅ 로그인 성공 시 이름과 토큰(localStorage 저장)
-      localStorage.setItem("userName", data.name);
-      // ✅ 로그인 성공 시 이름과 토큰(localStorage 저장)
+      if (data.userId) localStorage.setItem("userId", data.userId);
       if (data.userName) localStorage.setItem("userName", data.userName);
       if (data.token) localStorage.setItem("token", data.token);
-
+      if (data.role) localStorage.setItem("role", data.role);
       navigate("/"); // 로그인 성공 후 이동
     } catch (error) {
       console.error("로그인 실패:", error);
