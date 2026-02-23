@@ -87,6 +87,8 @@ function MyProfile() {
         alert("비밀번호 변경 완료. 다시 로그인해주세요.");
         localStorage.removeItem("token");
         localStorage.removeItem("userName");
+        localStorage.removeItem("userId");
+        localStorage.removeItem("role");
         navigate("/login");
         return; // 비밀번호 변경 시 바로 로그인 페이지 이동
       }

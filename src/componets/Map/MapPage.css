@@ -90,3 +90,18 @@
   transform: scale(1.05);               /* 살짝 확대 */
   background-color: #0b5ed7;            /* 진한 파란색 */
 }
+
+/* AddObject.css 재사용 */
+.edit-object-modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px; /* 원하는 사이드 너비 */
+  height: 100%;
+  background-color: #fff;
+  box-shadow: -3px 0 10px rgba(0,0,0,0.2);
+  z-index: 999;
+  padding: 16px;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+}

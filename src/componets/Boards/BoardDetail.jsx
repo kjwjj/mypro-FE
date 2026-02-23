@@ -44,7 +44,8 @@ function BoardDetail() {
         {
           headers: {
             Authorization: `Bearer ${token}`
-          }
+          },
+           data: {userId, isAdmin }
         }
       );
 

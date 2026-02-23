@@ -25,6 +25,7 @@ import FindEmail from './componets/Find/FindEmail'
 import FindPassWord from './componets/Find/FindPassWord'
 import AddBoard from './componets/Boards/AddBoard';
 import BoardEdit from './componets/Boards/BoardEdit';
+import EditObject from './componets/Map/EditObject';
 
 function App() {
  const location = useLocation(); // ← 여기서 가져오기
@@ -62,6 +63,7 @@ function App() {
           <Route path="/map" element={<MapPage />} />
           <Route path="/recommend" element={<Recommend />} />
           <Route path="/addobject" element={<AddObject />} />
+          <Route path="/editobject" element={<EditObject />} />
           <Route path="/find-id" element={<FindEmail />} />
           <Route path="/forgot-password" element={<FindPassWord />} />
           <Route path="*" element={<NotFound />} />
