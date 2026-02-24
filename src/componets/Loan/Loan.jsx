@@ -40,6 +40,14 @@ function LoanChatbot() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const token = localStorage.getItem("accessToken"); // 🔥 로그인 체크
+
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      return; // 여기서 차단
+    }
+    
     const { loanAmount, loanPeriod, income } = loanData;
 
     if (!loanAmount || !loanPeriod || !income) return;

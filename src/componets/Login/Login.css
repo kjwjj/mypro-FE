@@ -77,3 +77,12 @@
 .login-page img {
   max-height: 200px;
 }
+
+.login-alert {
+  margin-top: 8px;
+  padding: 8px;
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-radius: 6px;
+  font-size: 14px;
+}

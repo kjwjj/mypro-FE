@@ -22,7 +22,8 @@ function BoardList() {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(0); // ⚠ Spring은 0부터 시작
   const [totalPages, setTotalPages] = useState(0);
-
+  
+  const token = localStorage.getItem("token"); // 로그인 시 저장한 키와 동일하게
   // ✅ 백엔드에서 데이터 가져오기
   useEffect(() => {
     axios
@@ -48,7 +49,14 @@ function BoardList() {
                   <Button
                     color="primary"
                     size="sm"
-                    onClick={() => navigate("/addboard")}
+                    onClick={() => {
+                      if (!token) {
+                        alert("로그인이 필요합니다.");
+                        return;
+                      }
+
+                      navigate("/addboard");
+                    }}
                   >
                     글쓰기
                   </Button>

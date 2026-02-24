@@ -11,7 +11,7 @@ import {
   Col,
 } from "reactstrap";
 
-function LoginForm() {
+function LoginForm({ message }) {
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -33,7 +33,7 @@ function LoginForm() {
         body: JSON.stringify(form),
       });
 
-      
+
       // 응답이 실패면 에러 처리
       if (!response.ok) {
         const errData = await response.json();
@@ -61,6 +61,12 @@ function LoginForm() {
         <CardBody className="px-4 py-4">
           <div className="text-center mb-3">
             <h5 className="mb-0">로그인</h5>
+            {/* 🔥 로그인 필요 메시지 */}
+            {message && (
+              <div className="login-alert">
+                {message}
+              </div>
+            )}
           </div>
 
           <Form>

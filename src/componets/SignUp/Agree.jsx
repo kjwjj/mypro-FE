@@ -41,6 +41,18 @@ function Agree() {
     }
   };
 
+  const handleNext = () => {
+    if (!agree.terms || !agree.privacy) {
+      alert("필수 약관에 동의해주세요.");
+      return;
+    }
+
+    // 🔥 agreed 상태 넘겨줌
+    navigate("/signup/form", {
+      state: { agreed: true }
+    });
+  };
+
   return (
     <main className="fullscreen-page">
       <Container className="agree-container">
@@ -130,7 +142,7 @@ function Agree() {
                   color="primary"
                   className="w-100 mt-3"
                   disabled={!agree.terms || !agree.privacy}
-                  onClick={() => navigate("/signup/form")}
+                  onClick={handleNext}
                 >
                   다음
                 </Button>

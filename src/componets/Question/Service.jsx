@@ -13,6 +13,7 @@ function Service() {
 
   const [activeTab, setActiveTab] = useState("faq");
 
+  const token = localStorage.getItem("token");
   // 🔹 URL → 탭 동기화
   useEffect(() => {
     if (tabParam === "faq" || tabParam === "qna" || tabParam === "notice") {

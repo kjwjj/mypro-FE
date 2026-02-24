@@ -107,7 +107,14 @@ function Navbar() {
 
                 <ul className="dropdown-menu dropdown-menu-end">
                   <li>
-                    <Link className="dropdown-item" to="/mypage">
+                    <Link
+                      className="dropdown-item"
+                      to={
+                        localStorage.getItem("role") === "ROLE_ADMIN"
+                          ? "/dashboard"
+                          : "/mypage"
+                      }
+                    >
                       마이페이지
                     </Link>
                   </li>

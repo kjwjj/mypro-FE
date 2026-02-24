@@ -2,8 +2,11 @@ import "./Login.css"
 import logo from "../../assets/img/house.png"
 import LoginForm from "../LoginForm/LoginForm"
 import { Link } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 function Login() {
+  const location = useLocation();
+  const message = location.state?.message;
   return (
     <>
       <main className="login-page">
@@ -25,7 +28,7 @@ function Login() {
             {/* 로그인 카드 */}
             <div className="row justify-content-center">
               <div className="col-12 col-md-8 col-lg-6">
-                <LoginForm />
+                <LoginForm message={message} />
               </div>
             </div>
           </div>

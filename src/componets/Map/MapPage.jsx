@@ -322,6 +322,8 @@ function MapPage() {
     }
   };
 
+  const token = localStorage.getItem("token");
+
   return (
     <div className="map-page">
       {/* 지도 영역 */}
@@ -378,9 +380,11 @@ function MapPage() {
 
                 {/* 🔹수정/삭제 버튼 */}
                 {(userId && Number(userId) === house.userId) || isAdmin ? (
-                  <div style={{ marginTop: "4px" }}>
+                  <div className="d-flex gap-2 mt-2 justify-content-end">
+                    {/* 수정 버튼: 본인만 */}
                     {Number(userId) === house.userId && (
                       <button
+                        className="btn btn-primary btn-sm"
                         onClick={() => {
                           setEditHouse(house);
                           setShowEdit(true);
@@ -390,7 +394,14 @@ function MapPage() {
                         수정
                       </button>
                     )}
-                    <button onClick={() => handleDelete(house.id)}>삭제</button>
+
+                    {/* 삭제 버튼: 본인 또는 관리자 */}
+                    <button
+                      className="btn btn-outline-danger btn-sm"
+                      onClick={() => handleDelete(house.id)}
+                    >
+                      삭제
+                    </button>
                   </div>
                 ) : null}
               </div>
@@ -401,8 +412,13 @@ function MapPage() {
           <button
             className="fab-btn"
             onClick={() => {
+              if (!token) {
+                alert("로그인이 필요합니다.");
+                return;
+              }
+
               setShowAdd(true);
-              setShowEdit(false); // 수정 모달 닫기
+              setShowEdit(false);
             }}
           >
             +

@@ -1,10 +1,13 @@
 import React, { useRef, useEffect, useState } from "react";
 import { Card, CardBody, Button, Col, Row } from "reactstrap";
 import QnaForm from "./QnaForm";
+import { useNavigate } from "react-router-dom";
 
 function Qna() {
-const [showForm, setShowForm] = useState(false); // ✅ 이 줄 필수
+  const [showForm, setShowForm] = useState(false); // ✅ 이 줄 필수
   const mainRef = useRef(null);
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   useEffect(() => { // 스크롤제어
     document.documentElement.scrollTop = 0;
@@ -15,7 +18,7 @@ const [showForm, setShowForm] = useState(false); // ✅ 이 줄 필수
   }, []);
 
   return (
-     <Row ref={mainRef}>
+    <Row ref={mainRef}>
       <Col md={{ size: 6, offset: 3 }}>
         {!showForm ? (
           <Card className="shadow">
@@ -24,7 +27,17 @@ const [showForm, setShowForm] = useState(false); // ✅ 이 줄 필수
               <p className="text-muted mb-4">
                 1:1 문의를 남겨주시면 빠르게 답변드리겠습니다.
               </p>
-              <Button color="primary" onClick={() => setShowForm(true)}>
+              <Button
+                color="primary"
+                onClick={() => {
+                  if (!token) {
+                    alert("로그인이 필요합니다.");
+                    return;
+                  }
+
+                  setShowForm(true);
+                }}
+              >
                 문의하기
               </Button>
             </CardBody>

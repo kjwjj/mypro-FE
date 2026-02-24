@@ -52,9 +52,22 @@ function EditObject({ house, onClose, onUpdated }) {
         </select>
       </Row>
 
-      <div className="add-object-button-area">
-        <button onClick={onClose}>취소</button>
-        <button onClick={handleSubmit}>저장</button>
+      <div className="d-flex gap-2 justify-content-end mt-4">
+        {/* 취소 버튼 */}
+        <button
+          className="btn btn-outline-danger btn-sm"
+          onClick={onClose}
+        >
+          취소
+        </button>
+
+        {/* 저장 버튼 */}
+        <button
+          className="btn btn-primary btn-sm"
+          onClick={handleSubmit}
+        >
+          저장
+        </button>
       </div>
     </div>
   );

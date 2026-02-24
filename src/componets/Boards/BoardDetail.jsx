@@ -45,7 +45,7 @@ function BoardDetail() {
           headers: {
             Authorization: `Bearer ${token}`
           },
-           data: {userId, isAdmin }
+          data: { userId, isAdmin }
         }
       );
 
@@ -70,30 +70,31 @@ function BoardDetail() {
               <hr />
               <p>{post.content}</p>
 
-              <div className="mt-3 d-flex gap-2">
-
+              <div className="mt-3 d-flex justify-content-end gap-2">
                 {isAuthor && (
-                  <Button
-                    color="warning"
+                  <button
+                    className="btn btn-primary btn-sm"
                     onClick={() => navigate(`/board/edit/${post.id}`)}
                   >
                     수정
-                  </Button>
+                  </button>
                 )}
 
                 {(isAuthor || isAdmin) && (
-                  <Button color="danger" onClick={handleDelete}>
+                  <button
+                    className="btn btn-outline-danger btn-sm"
+                    onClick={handleDelete}
+                  >
                     삭제
-                  </Button>
+                  </button>
                 )}
 
-                <Button
-                  color="secondary"
+                <button
+                  className="btn btn-secondary btn-sm"
                   onClick={() => navigate("/boardlist")}
                 >
                   목록
-                </Button>
-
+                </button>
               </div>
 
             </CardBody>

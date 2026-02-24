@@ -140,7 +140,7 @@ import { useState } from "react";
 import axios from "axios";
 import "./AddObject.css";
 
-function AddObject({ onClose, onAdded = () => {} }) {
+function AddObject({ onClose, onAdded = () => { } }) {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [price, setPrice] = useState("");
@@ -246,9 +246,22 @@ function AddObject({ onClose, onAdded = () => {} }) {
         </div>
       )}
 
-      <div className="add-object-button-area">
-        <button onClick={onClose}>취소</button>
-        <button onClick={handleSubmit}>등록</button>
+      <div className="d-flex gap-2 justify-content-end mt-4">
+        {/* 취소 버튼 */}
+        <button
+          className="btn btn-outline-danger btn-sm"
+          onClick={onClose}
+        >
+          취소
+        </button>
+
+        {/* 등록 버튼 */}
+        <button
+          className="btn btn-primary btn-sm"
+          onClick={handleSubmit}
+        >
+          등록
+        </button>
       </div>
     </div>
   );
