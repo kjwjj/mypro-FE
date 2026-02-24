@@ -31,7 +31,10 @@ import UsersInfo from './componets/Admin/UsersInfo';
 import ObjectInfo from './componets/Admin/ObjectInfo';
 import NoticeInfo from './componets/Admin/NoticeInfo';
 import MailInfo from './componets/Admin/MailInfo';
-
+import AddNotice from './componets/Admin/AddNotice';
+import NoticeDetail from './componets/Admin/NoticeDetail'; // 관리자용
+import NoticeEdit from './componets/Admin/NoticeEdit';
+import NoticeDetail_U from './componets/Question/NoticeDetail_U'; // user용
 function App() {
   const location = useLocation(); // ← 여기서 가져오기
 
@@ -44,9 +47,20 @@ function App() {
     "/dashboard/userinfo",
     "/dashboard/objectinfo",
     "/dashboard/noticeinfo",
-    "/dashboard/mailinfo"
+    "/dashboard/mailinfo",
+    "/dashboard/addnotice",
+    "/dashboard/noticedetail/:id",
+    "/dashboard/notice/edit/:id"
   ];
-  const hideNavbar = hideNavbarPaths.includes(location.pathname);
+  // 현재 경로가 hideFooterPaths에 포함되어 있는지 확인
+  const hideNavbar = hideNavbarPaths.some(path => {
+    if (path.includes(":id")) {
+      // 동적 id 처리
+      const basePath = path.split("/:id")[0];
+      return location.pathname.startsWith(basePath);
+    }
+    return location.pathname === path;
+  });
 
   // Footer 숨길 경로들
   const hideFooterPaths = ["/login",
@@ -57,9 +71,20 @@ function App() {
     "/dashboard/userinfo",
     "/dashboard/objectinfo",
     "/dashboard/noticeinfo",
-    "/dashboard/mailinfo"
+    "/dashboard/mailinfo",
+    "/dashboard/addnotice",
+    "/dashboard/noticedetail/:id",
+    "/dashboard/notice/edit/:id"
   ];
-  const hideFooter = hideFooterPaths.includes(location.pathname);
+  // 현재 경로가 hideFooterPaths에 포함되어 있는지 확인
+  const hideFooter = hideFooterPaths.some(path => {
+    if (path.includes(":id")) {
+      // 동적 id 처리
+      const basePath = path.split("/:id")[0];
+      return location.pathname.startsWith(basePath);
+    }
+    return location.pathname === path;
+  });
 
   return (
     <div className="app-wrapper">
@@ -102,15 +127,25 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/dashboard/notice/edit/:id" element={
+            <ProtectedRoute requireAdmin={true}>
+              <NoticeEdit />
+            </ProtectedRoute>}
+          />
+          <Route path="/dashboard/noticedetail/:id" element={
+            <ProtectedRoute requireAdmin={true}>
+              <NoticeDetail />
+            </ProtectedRoute>}
+          />
           {/* 문의관리 */}
           <Route
-              path="/dashboard/mailinfo"
-              element={
-                <ProtectedRoute requireAdmin={true}>
-                  <MailInfo />
-                </ProtectedRoute>
-              }
-            />
+            path="/dashboard/mailinfo"
+            element={
+              <ProtectedRoute requireAdmin={true}>
+                <MailInfo />
+              </ProtectedRoute>
+            }
+          />
           <Route path="/newslist" element={<NewsList />} />
           <Route path="/boardlist" element={<BoardList />} />
           <Route path="/addboard" element={
@@ -124,6 +159,7 @@ function App() {
           <Route path="/signup/form" element={<SignUpForm />} />
           <Route path="/loan" element={<Loan />} />
           <Route path="/service" element={<Service />} />
+          <Route path="/service/notice/:id" element={<NoticeDetail_U />} />
           <Route path="/mypage" element={
             <ProtectedRoute>
               <MyPageForm />
@@ -149,6 +185,7 @@ function App() {
           <Route path="/find-id" element={<FindEmail />} />
           <Route path="/forgot-password" element={<FindPassWord />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="/dashboard/addnotice" element={<AddNotice />} />
         </Routes>
       </main>
 

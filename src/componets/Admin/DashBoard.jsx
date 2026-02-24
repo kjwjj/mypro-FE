@@ -27,6 +27,9 @@ function Dashboard() {
     { name: "매물", value: 0 },
     { name: "기타", value: 0 },
   ]);
+  const [mailData, setMailData] = useState([]); // 서버에서 가져올 문의 데이터
+  // 상단 useState 선언 부분에 추가
+  const [noticeList, setNoticeList] = useState([]);
 
   // 로그인 안됨 → 로그인 페이지로 이동
   if (!token) {
@@ -67,6 +70,25 @@ function Dashboard() {
         const propertyCount = propertyRes.data;
         setTotalProperties(propertyCount);
         setPropertyData([{ name: "매물", value: propertyCount }, { name: "기타", value: 0 }]);
+
+        // 공지사항 데이터 가져오기 (예: 최신 5개)
+        const noticeRes = await axios.get("http://localhost:8080/api/notices?page=0&size=5", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setNoticeList(noticeRes.data.content); // Page 객체라면 content 안에 데이터 있음
+
+        // 최근 문의 메일 (전체)
+        const mailRes = await axios.get("http://localhost:8080/api/qna/all", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const mails = mailRes.data.map((qna) => ({
+          id: qna.userEmail,
+          type: qna.category,
+          date: new Date(qna.questionDate).toLocaleDateString(),
+          status: qna.answerStatus,
+        }));
+        setMailData(mails);
+
       } catch (err) {
         console.error(err);
         alert("대시보드 데이터를 가져오는데 실패했습니다.");
@@ -75,27 +97,6 @@ function Dashboard() {
 
     fetchData();
   }, [token]);
-
-  const mailData = [
-    {
-      id: "user01",
-      type: "일반문의",
-      date: "2026-02-24",
-      status: "답변완료",
-    },
-    {
-      id: "user02",
-      type: "신고",
-      date: "2026-02-23",
-      status: "대기중",
-    },
-    {
-      id: "user03",
-      type: "매물문의",
-      date: "2026-02-22",
-      status: "답변완료",
-    },
-  ];
 
   const COLORS = ["#3b82f6", "#e2e8f0"];
 
@@ -219,22 +220,19 @@ function Dashboard() {
           <div className="bottom-card">
             <h3>공지사항</h3>
             <ul>
-              <li>
-                <span>서버 점검 안내</span>
-                <span>02-28</span>
-              </li>
-              <li>
-                <span>신규 기능 업데이트</span>
-                <span>02-20</span>
-              </li>
-              <li>
-                <span>보안 정책 강화 안내</span>
-                <span>02-15</span>
-              </li>
+              {noticeList.length === 0 ? (
+                <li>공지사항이 없습니다.</li>
+              ) : (
+                noticeList.map((notice) => (
+                  <li key={notice.id}>
+                    <span>{notice.title}</span>
+                    <span>{new Date(notice.createdAt).toLocaleDateString()}</span>
+                  </li>
+                ))
+              )}
             </ul>
           </div>
         </div>
-
         {/* ===== 최근 문의 메일 ===== */}
         <div className="mail-card">
           <h3>최근 문의 메일</h3>
@@ -248,22 +246,20 @@ function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {mailData.map((mail, index) => (
-                <tr key={index}>
-                  <td>{mail.id}</td>
-                  <td>{mail.type}</td>
-                  <td>{mail.date}</td>
-                  <td
-                    className={
-                      mail.status === "답변완료"
-                        ? "status-done"
-                        : "status-wait"
-                    }
-                  >
-                    {mail.status}
-                  </td>
-                </tr>
-              ))}
+              {mailData.length === 0 ? (
+                <tr><td colSpan="4">문의 메일이 없습니다.</td></tr>
+              ) : (
+                mailData.map((mail, index) => (
+                  <tr key={index}>
+                    <td>{mail.id}</td>
+                    <td>{mail.type}</td>
+                    <td>{mail.date}</td>
+                    <td className={mail.status === "답변완료" ? "status-done" : "status-wait"}>
+                      {mail.status}
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

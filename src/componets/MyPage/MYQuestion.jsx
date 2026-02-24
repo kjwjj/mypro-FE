@@ -1,30 +1,74 @@
-import { Table, Badge } from "reactstrap";
+import React, { useEffect, useState } from "react";
+import { Table, Badge, Spinner } from "reactstrap";
 
 function MyQuestion() {
-  const noticeList = [
-    { id: 1, title: "문의1", date: "2026-01-20", status: "pending" },
-    { id: 2, title: "문의2", date: "2026-01-15", status: "done" },
-    { id: 3, title: "문의3", date: "2026-01-10", status: "pending" },
-  ];
+  const [noticeList, setNoticeList] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const token = localStorage.getItem("token"); // 로그인 토큰
+
+  useEffect(() => {
+    if (!token) return;
+
+    const fetchMyQuestions = async () => {
+      try {
+        const res = await fetch("http://localhost:8080/api/qna/mine", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          // 🔹 백엔드 데이터 맞게 변환
+          const formatted = data.map((item) => ({
+            id: item.id,
+            title: item.title,
+            date: item.questionDate ? item.questionDate.split("T")[0] : "",
+            status: item.answerStatus === "대기중" ? "pending" : "done",
+          }));
+          setNoticeList(formatted);
+        } else {
+          console.error("문의 내역 조회 실패");
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMyQuestions();
+  }, [token]);
+
+  if (!token) return <p>로그인이 필요합니다.</p>;
+
+  if (loading)
+    return (
+      <div className="text-center mt-4">
+        <Spinner color="primary" />
+      </div>
+    );
 
   return (
     <div className="mt-4">
       <Table responsive hover className="mb-0">
-        {/* 🔹 헤더 */}
         <thead>
           <tr>
             <th className="py-3">제목</th>
-            <th
-              className="py-3 text-right"
-              style={{ width: "140px" }}
-            >
+            <th className="py-3 text-right" style={{ width: "140px" }}>
               등록일
             </th>
           </tr>
         </thead>
 
-        {/* 🔹 목록 */}
         <tbody>
+          {noticeList.length === 0 && (
+            <tr>
+              <td colSpan={2} className="text-center text-muted py-3">
+                문의 내역이 없습니다.
+              </td>
+            </tr>
+          )}
           {noticeList.map((notice) => (
             <tr key={notice.id} style={{ cursor: "pointer" }}>
               <td className="py-3">
@@ -36,9 +80,7 @@ function MyQuestion() {
                 )}
               </td>
 
-              <td className="py-3 text-right text-muted">
-                {notice.date}
-              </td>
+              <td className="py-3 text-right text-muted">{notice.date}</td>
             </tr>
           ))}
         </tbody>
@@ -46,4 +88,5 @@ function MyQuestion() {
     </div>
   );
 }
+
 export default MyQuestion;

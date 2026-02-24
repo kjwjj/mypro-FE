@@ -8,23 +8,48 @@ function QnaForm() {
     content: "",
   });
 
+  // 로그인 토큰 가져오기
+  const token = localStorage.getItem("token");
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 🔹 나중에 API 연결 위치
-    console.log("문의 내용:", form);
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
 
-    alert("문의가 접수되었습니다.");
-    setForm({
-      title: "",
-      category: "general",
-      content: "",
-    });
+    try {
+      const response = await fetch("http://localhost:8080/api/qna", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`, // JWT 토큰
+        },
+        body: JSON.stringify({
+          title: form.title,
+          category: form.category,
+          content: form.content,
+        }),
+      });
+
+      if (response.ok) {
+        alert("문의가 접수되었습니다.");
+        setForm({ title: "", category: "general", content: "" });
+      } else {
+        const err = await response.json();
+        console.error(err);
+        alert("문의 전송 실패!");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("서버 오류가 발생했습니다.");
+    }
   };
 
   return (
