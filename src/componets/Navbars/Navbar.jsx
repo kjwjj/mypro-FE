@@ -28,10 +28,7 @@ function Navbar() {
   }, [location]);
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("role");
+    localStorage.clear();
     navigate("/");
   };
 

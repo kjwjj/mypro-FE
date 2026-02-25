@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Table, Badge, Spinner } from "reactstrap";
+import { useNavigate } from "react-router-dom";
 
 function MyQuestion() {
   const [noticeList, setNoticeList] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
   const token = localStorage.getItem("token"); // 로그인 토큰
 
   useEffect(() => {
@@ -70,7 +71,13 @@ function MyQuestion() {
             </tr>
           )}
           {noticeList.map((notice) => (
-            <tr key={notice.id} style={{ cursor: "pointer" }}>
+            <tr
+              key={notice.id}
+              style={{ cursor: "pointer" }}
+              onClick={() =>
+                navigate(`/mypage/question/${notice.id}`)
+              }
+            >
               <td className="py-3">
                 <span className="mr-2">{notice.title}</span>
                 {notice.status === "pending" ? (

@@ -33,8 +33,12 @@ import NoticeInfo from './componets/Admin/NoticeInfo';
 import MailInfo from './componets/Admin/MailInfo';
 import AddNotice from './componets/Admin/AddNotice';
 import NoticeDetail from './componets/Admin/NoticeDetail'; // 관리자용
+import MailDetail from './componets/Admin/MailDetail';
+import AnswerPage from './componets/Admin/AnswerPage';
 import NoticeEdit from './componets/Admin/NoticeEdit';
 import NoticeDetail_U from './componets/Question/NoticeDetail_U'; // user용
+import MyQuestionDetail from './componets/MyPage/MyQuestionDetail';
+
 function App() {
   const location = useLocation(); // ← 여기서 가져오기
 
@@ -50,7 +54,9 @@ function App() {
     "/dashboard/mailinfo",
     "/dashboard/addnotice",
     "/dashboard/noticedetail/:id",
-    "/dashboard/notice/edit/:id"
+    "/dashboard/notice/edit/:id",
+    "/dashboard/mailinfo/:id",
+    "/dashboard/mailinfo/:id/answer"
   ];
   // 현재 경로가 hideFooterPaths에 포함되어 있는지 확인
   const hideNavbar = hideNavbarPaths.some(path => {
@@ -74,7 +80,9 @@ function App() {
     "/dashboard/mailinfo",
     "/dashboard/addnotice",
     "/dashboard/noticedetail/:id",
-    "/dashboard/notice/edit/:id"
+    "/dashboard/notice/edit/:id",
+    "/dashboard/mailinfo/:id",
+    "/dashboard/mailinfo/:id/answer"
   ];
   // 현재 경로가 hideFooterPaths에 포함되어 있는지 확인
   const hideFooter = hideFooterPaths.some(path => {
@@ -146,6 +154,16 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/dashboard/mailinfo/:id" element={
+            <ProtectedRoute>
+              <MailDetail />
+            </ProtectedRoute>}
+          />
+          <Route path="/dashboard/mailinfo/:id/answer" element={
+            <ProtectedRoute>
+              <AnswerPage />
+            </ProtectedRoute>}
+          />
           <Route path="/newslist" element={<NewsList />} />
           <Route path="/boardlist" element={<BoardList />} />
           <Route path="/addboard" element={
@@ -163,6 +181,11 @@ function App() {
           <Route path="/mypage" element={
             <ProtectedRoute>
               <MyPageForm />
+            </ProtectedRoute>}
+          />
+          <Route path="/mypage/question/:id" element={
+            <ProtectedRoute>
+              <MyQuestionDetail />
             </ProtectedRoute>}
           />
           <Route path="/terms" element={<Terms />} />

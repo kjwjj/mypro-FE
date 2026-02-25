@@ -72,7 +72,7 @@ function Dashboard() {
         setPropertyData([{ name: "매물", value: propertyCount }, { name: "기타", value: 0 }]);
 
         // 공지사항 데이터 가져오기 (예: 최신 5개)
-        const noticeRes = await axios.get("http://localhost:8080/api/notices?page=0&size=5", {
+        const noticeRes = await axios.get("http://localhost:8080/api/notices?page=0&size=3", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setNoticeList(noticeRes.data.content); // Page 객체라면 content 안에 데이터 있음

@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card, CardBody, Badge, Button } from "reactstrap";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 function ServiceSection() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -12,17 +14,15 @@ function ServiceSection() {
     { id: 4, source: "다음", title: "주거 플랫폼, AI 도입 가속화", date: "2026-01-24", link: "#" },
   ];
 
-  const noticeData = [
-    { id: 1, title: "서비스 점검 안내", date: "2026-01-27", link: "#" },
-    { id: 2, title: "이사 프로모션 안내", date: "2026-01-25", link: "#" },
-    { id: 3, title: "신규 기능 업데이트", date: "2026-01-24", link: "#" },
-    { id: 4, title: "회원 혜택 안내", date: "2026-01-23", link: "#" },
-  ];
 
   const [newsData, setNewsData] = useState([]);
+  const [noticeData, setNoticeData] = useState([]);
   const [newsPage, setNewsPage] = useState(1);
   const [noticePage, setNoticePage] = useState(1);
   const itemsPerPage = 2;
+
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("http://localhost:8080/api/news")
@@ -40,7 +40,22 @@ function ServiceSection() {
         console.error("뉴스 불러오기 실패:", err);
         setNewsData(staticNewsData);
       });
-  }, []);
+
+    // ===== 공지사항 불러오기 =====
+    axios.get("http://localhost:8080/api/notices", {
+      headers: { Authorization: `Bearer ${token}` } // ✅ 토큰 포함
+    })
+      .then(res => {
+        // 서버가 Page 객체를 반환하면 res.data.content 사용
+        const notices = res.data.content || res.data;
+        const sorted = notices.sort((a, b) => new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date));
+        setNoticeData(sorted);
+      })
+      .catch(err => {
+        console.error("공지사항 불러오기 실패:", err);
+        setNoticeData([]);
+      });
+  }, [token]);
 
   // 페이지네이션
   const newsStart = (newsPage - 1) * itemsPerPage;
@@ -155,7 +170,12 @@ function ServiceSection() {
               <CardBody style={contentStyle}>
                 <h5 className="text-center mb-3">공지사항</h5>
                 {paginatedNotice.map((notice) => (
-                  <div key={notice.id} className="mb-2">
+                  <div
+                    key={notice.id}
+                    className="mb-2"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate(`/service/notice/${notice.id}`)}
+                  >
                     <Badge color="warning" pill className="me-1">
                       공지
                     </Badge>
@@ -163,10 +183,13 @@ function ServiceSection() {
                       {notice.title}
                     </a>
                     <br />
-                    <small className="text-muted">{notice.date}</small>
+                    <small className="text-muted">
+                      {new Date(notice.createdAt || notice.date).toLocaleDateString()}
+                    </small>
                   </div>
                 ))}
               </CardBody>
+
 
               {/* 공지사항 페이지네이션 */}
               {noticeTotalPages > 1 && (

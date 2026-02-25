@@ -24,7 +24,9 @@ function LoginForm({ message }) {
     setForm({ ...form, [name]: value });
   };
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault(); // 🔥 새로고침 방지
+
     try {
       // ✅ 로그인 API URL 수정
       const response = await fetch("http://localhost:8080/api/users/login", {
@@ -33,15 +35,13 @@ function LoginForm({ message }) {
         body: JSON.stringify(form),
       });
 
+      const data = await response.json(); // 🔥 먼저 json 파싱
 
       // 응답이 실패면 에러 처리
       if (!response.ok) {
         const errData = await response.json();
         throw new Error(errData || "로그인 실패");
       }
-
-      const data = await response.json();
-      console.log("로그인 성공");
 
       // ✅ 로그인 성공 시 이름과 토큰(localStorage 저장)
       if (data.userId) localStorage.setItem("userId", data.userId);
@@ -69,7 +69,7 @@ function LoginForm({ message }) {
             )}
           </div>
 
-          <Form>
+          <Form onSubmit={handleLogin}>
             <FormGroup className="mb-2">
               <Input
                 type="email"
@@ -89,7 +89,7 @@ function LoginForm({ message }) {
               />
             </FormGroup>
 
-            <Button color="primary" block onClick={handleLogin}>
+            <Button color="primary" block type="submit">
               로그인
             </Button>
 

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Container, Nav, NavItem, NavLink } from "reactstrap";
 import classnames from "classnames";
 import axios from "axios";
@@ -11,11 +12,23 @@ import MyQuestion from "./MYQuestion"
 import MyRatePlan from "./MyRatePlan";
 
 function MyPageForm() {
-  const [activeTab, setActiveTab] = useState("myprofile");
+  const location = useLocation();
 
+  const getTabFromQuery = () => {
+    const params = new URLSearchParams(location.search);
+    return params.get("tab") || "myprofile";
+  };
 
-  // 🔹 비밀번호 확인용 (구조만)
-  const [verified, setVerified] = useState(false);
+  const [activeTab, setActiveTab] = useState(getTabFromQuery());
+
+  useEffect(() => {
+    setActiveTab(getTabFromQuery());
+  }, [location.search]);
+
+  // 🔹 비밀번호 확인용
+  const [verified, setVerified] = useState(
+    localStorage.getItem("mypage_verified") === "true"
+  );
   const [password, setPassword] = useState("");
 
 
@@ -40,6 +53,7 @@ function MyPageForm() {
       );
 
       setVerified(true);
+      localStorage.setItem("mypage_verified", "true"); // 🔥 추가
     } catch (err) {
       alert("비밀번호가 일치하지 않습니다.");
     }
@@ -81,18 +95,25 @@ function MyPageForm() {
       <div style={{ marginTop: "120px" }} className="text-center">
         <h2 className="mb-4">비밀번호 재확인</h2>
 
-        <input
-          type="password"
-          className="form-control mx-auto mb-3"
-          style={{ maxWidth: "320px" }}
-          placeholder="비밀번호를 입력하세요"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleVerify();
+          }}
+        >
+          <input
+            type="password"
+            className="form-control mx-auto mb-3"
+            style={{ maxWidth: "320px" }}
+            placeholder="비밀번호를 입력하세요"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        <button className="btn btn-primary" onClick={handleVerify}>
-          확인
-        </button>
+          <button type="submit" className="btn btn-primary">
+            확인
+          </button>
+        </form>
       </div>
     );
   }
