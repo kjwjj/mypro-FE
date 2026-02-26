@@ -83,42 +83,66 @@ function NoticeInfo() {
           </li>
         </ul>
       </div>
-
-      {/* ===== 메인 영역 ===== */}
+   {/* ===== 메인 영역 ===== */}
       <div className="main">
-        <div className="notice-header d-flex justify-content-between align-items-center mb-3">
-          <h2>공지사항</h2>
-          <Button color="primary" size="sm" onClick={() => navigate("/dashboard/addnotice")}>작성</Button>
+        <div className="d-flex justify-content-between align-items-center mb-3">
+          <h2 className="title">공지사항</h2>
+          <button
+            style={{
+              backgroundColor: "#0d6efd",
+              color: "white",
+              border: "none",
+              padding: "5px 15px",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+            onClick={() => navigate("/dashboard/addnotice")}
+          >
+            작성
+          </button>
         </div>
 
-        <Table responsive hover className="mb-0">
-          <thead className="thead-light">
-            <tr>
-              <th style={{ width: "10%" }}>번호</th>
-              <th>제목</th>
-              <th style={{ width: "20%" }}>작성일</th>
-            </tr>
-          </thead>
-          <tbody>
-            {notices.map((notice) => (
-              <tr key={notice.id}>
-                <td>{notice.id}</td>
-                <td style={{ cursor: "pointer", color: "#007bff" }}
-                 onClick={() => navigate(`/dashboard/noticedetail/${notice.id}`)} >{notice.title}</td>
-                <td>{notice.createdAt?.substring(0, 10)}</td>
+        {/* ===== 공지사항 카드 테이블 ===== */}
+        <div className="chart-card" style={{ padding: "20px", overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th style={{ width: "10%" }}>번호</th>
+                <th>제목</th>
+                <th style={{ width: "20%" }}>작성일</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {notices.map((notice) => (
+                <tr key={notice.id}>
+                  <td>{notice.id}</td>
+                  <td
+                    style={{ cursor: "pointer", color: "#0d6efd" }}
+                    onClick={() => navigate(`/dashboard/noticedetail/${notice.id}`)}
+                  >
+                    {notice.title}
+                  </td>
+                  <td>{notice.createdAt?.substring(0, 10)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
+        {/* ===== 페이지네이션 ===== */}
         <div className="d-flex justify-content-center my-3">
-          <Pagination>
+          <ul className="pagination">
             {[...Array(totalPages)].map((_, index) => (
-              <PaginationItem key={index} active={page === index}>
-                <PaginationLink onClick={() => setPage(index)}>{index + 1}</PaginationLink>
-              </PaginationItem>
+              <li
+                key={index}
+                className={`page-item ${page === index ? "active" : ""}`}
+                style={{ cursor: "pointer" }}
+                onClick={() => setPage(index)}
+              >
+                <span className="page-link">{index + 1}</span>
+              </li>
             ))}
-          </Pagination>
+          </ul>
         </div>
       </div>
     </div>

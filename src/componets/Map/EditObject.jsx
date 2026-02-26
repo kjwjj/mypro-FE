@@ -1,21 +1,43 @@
 import { useState } from "react";
 import axios from "axios";
-import "./AddObject.css"; // AddObject 스타일 재사용
+import "./AddObject.css";
 
 function EditObject({ house, onClose, onUpdated }) {
+  const token = localStorage.getItem("token");
+
+  // 🏠 house 기본정보
   const [name, setName] = useState(house.name);
   const [address, setAddress] = useState(house.address);
-  const [price, setPrice] = useState(house.price);
   const [rooms, setRooms] = useState(house.rooms);
   const [type, setType] = useState(house.type);
 
+  // 💰 listing 정보 (house.listing 있다고 가정)
+  const [tradeType, setTradeType] = useState(house.listing?.tradeType || "monthly");
+  const [deposit, setDeposit] = useState(house.listing?.deposit || "");
+  const [rent, setRent] = useState(house.listing?.rent || "");
+  const [salePrice, setSalePrice] = useState(house.listing?.salePrice || "");
+
   const handleSubmit = async () => {
     try {
-      await axios.put(`http://localhost:8080/api/houses/${house.id}`, {
-        name, address, price, rooms, type
-      }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-      });
+      // 1️⃣ house 수정
+      await axios.put(
+        `http://localhost:8080/api/houses/${house.id}`,
+        { name, address, rooms, type },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // 2️⃣ listing 수정
+      await axios.put(
+        `http://localhost:8080/api/listings/${house.listing.id}`,
+        {
+          tradeType,
+          deposit: tradeType !== "sale" ? deposit : null,
+          rent: tradeType === "monthly" ? rent : null,
+          salePrice: tradeType === "sale" ? salePrice : null
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
       onUpdated();
       onClose();
     } catch (err) {
@@ -25,7 +47,7 @@ function EditObject({ house, onClose, onUpdated }) {
   };
 
   return (
-    <div className="add-object-container"> {/* AddObject 스타일 재사용 */}
+    <div className="add-object-container">
       <h2 style={{ marginBottom: "24px" }}>매물 수정</h2>
 
       <Row label="매물명">
@@ -34,10 +56,6 @@ function EditObject({ house, onClose, onUpdated }) {
 
       <Row label="주소">
         <input className="add-object-input" value={address} onChange={e => setAddress(e.target.value)} />
-      </Row>
-
-      <Row label="가격 (만원)">
-        <input type="number" className="add-object-input" value={price} onChange={e => setPrice(e.target.value)} />
       </Row>
 
       <Row label="방 개수">
@@ -52,20 +70,38 @@ function EditObject({ house, onClose, onUpdated }) {
         </select>
       </Row>
 
+      <Row label="거래 유형">
+        <select className="add-object-input" value={tradeType} onChange={e => setTradeType(e.target.value)}>
+          <option value="monthly">월세</option>
+          <option value="jeonse">전세</option>
+          <option value="sale">매매</option>
+        </select>
+      </Row>
+
+      {tradeType !== "sale" && (
+        <Row label="보증금 (만원)">
+          <input type="number" className="add-object-input" value={deposit} onChange={e => setDeposit(e.target.value)} />
+        </Row>
+      )}
+
+      {tradeType === "monthly" && (
+        <Row label="월세 (만원)">
+          <input type="number" className="add-object-input" value={rent} onChange={e => setRent(e.target.value)} />
+        </Row>
+      )}
+
+      {tradeType === "sale" && (
+        <Row label="매매가 (만원)">
+          <input type="number" className="add-object-input" value={salePrice} onChange={e => setSalePrice(e.target.value)} />
+        </Row>
+      )}
+
       <div className="d-flex gap-2 justify-content-end mt-4">
-        {/* 취소 버튼 */}
-        <button
-          className="btn btn-outline-danger btn-sm"
-          onClick={onClose}
-        >
+        <button className="btn btn-outline-danger btn-sm" onClick={onClose}>
           취소
         </button>
 
-        {/* 저장 버튼 */}
-        <button
-          className="btn btn-primary btn-sm"
-          onClick={handleSubmit}
-        >
+        <button className="btn btn-primary btn-sm" onClick={handleSubmit}>
           저장
         </button>
       </div>

@@ -93,7 +93,7 @@ function MailInfo() {
       </div>
       {/* ===== 메인 ===== */}
       <div className="main">
-        <h1 className="title">문의 관리</h1>
+        <h2 className="title">문의 관리</h2>
 
         {/* ===== 문의 테이블 카드 ===== */}
         <div className="chart-card" style={{ padding: "20px", overflowX: "auto" }}>

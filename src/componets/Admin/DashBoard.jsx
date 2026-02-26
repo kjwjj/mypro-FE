@@ -7,7 +7,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import logo from "../../assets/img/house.png"
+import logo from "../../assets/img/house.png";
 import { Link, Navigate } from "react-router-dom";
 import axios from "axios";
 
@@ -17,19 +17,25 @@ function Dashboard() {
 
   // ===== 상태 선언 =====
   const [totalUsers, setTotalUsers] = useState(0);
+  const [selectedTradeType, setSelectedTradeType] = useState("ALL");
+  const [tradeCounts, setTradeCounts] = useState({
+    ALL: 0,
+    MONTHLY: 0,
+    JEONSE: 0,
+    SALE: 0,
+  });
   const [userData, setUserData] = useState([
-    { name: "회원", value: 0 },
-    { name: "기타", value: 0 },
+    { name: "회원", value: 0 }
   ]);
   const [totalBoards, setTotalBoards] = useState(0);
   const [totalProperties, setTotalProperties] = useState(0);
   const [propertyData, setPropertyData] = useState([
-    { name: "매물", value: 0 },
-    { name: "기타", value: 0 },
+    { name: "매물", value: 0 }
   ]);
   const [mailData, setMailData] = useState([]); // 서버에서 가져올 문의 데이터
-  // 상단 useState 선언 부분에 추가
   const [noticeList, setNoticeList] = useState([]);
+
+  
 
   // 로그인 안됨 → 로그인 페이지로 이동
   if (!token) {
@@ -43,7 +49,6 @@ function Dashboard() {
     return <Navigate to="/" replace />;
   }
 
-
   // ===== 총 데이터 가져오기 =====
   useEffect(() => {
     const fetchData = async () => {
@@ -54,7 +59,7 @@ function Dashboard() {
         });
         const userCount = userRes.data;
         setTotalUsers(userCount);
-        setUserData([{ name: "회원", value: userCount }, { name: "기타", value: 0 }]);
+        setUserData([{ name: "회원", value: userCount }]);
 
         // 총 게시글수
         const boardRes = await axios.get("http://localhost:8080/api/boards/count", {
@@ -63,15 +68,26 @@ function Dashboard() {
         const boardCount = boardRes.data;
         setTotalBoards(boardCount);
 
-        // 총 매물수 ✅ URL 수정
-        const propertyRes = await axios.get("http://localhost:8080/api/houses/count", {
+        // 전체 매물 가져오기
+        const houseRes = await axios.get("http://localhost:8080/api/houses", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const propertyCount = propertyRes.data;
-        setTotalProperties(propertyCount);
-        setPropertyData([{ name: "매물", value: propertyCount }, { name: "기타", value: 0 }]);
+        const houses = houseRes.data;
 
-        // 공지사항 데이터 가져오기 (예: 최신 5개)
+        const counts = {
+          ALL: houses.length,
+          MONTHLY: houses.filter((h) => h.listing?.tradeType === "MONTHLY").length,
+          JEONSE: houses.filter((h) => h.listing?.tradeType === "JEONSE").length,
+          SALE: houses.filter((h) => h.listing?.tradeType === "SALE").length,
+        };
+
+        setTradeCounts(counts);
+        setTotalProperties(counts.ALL);
+        setPropertyData([
+          { name: "매물", value: counts.ALL }
+        ]);
+
+        // 공지사항 데이터 가져오기 (예: 최신 3개)
         const noticeRes = await axios.get("http://localhost:8080/api/notices?page=0&size=3", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -88,7 +104,6 @@ function Dashboard() {
           status: qna.answerStatus,
         }));
         setMailData(mails);
-
       } catch (err) {
         console.error(err);
         alert("대시보드 데이터를 가져오는데 실패했습니다.");
@@ -104,15 +119,19 @@ function Dashboard() {
     <div className="admin-container">
       {/* ===== 사이드바 ===== */}
       <div className="sidebar">
-        <Link to="/" className="logo-container" style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "20px 0",
-          flexDirection: "column",
-          textDecoration: "none", // 링크 밑줄 제거
-          color: "inherit", // 글자 색 유지
-        }}>
+        <Link
+          to="/"
+          className="logo-container"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "20px 0",
+            flexDirection: "column",
+            textDecoration: "none",
+            color: "inherit",
+          }}
+        >
           <img
             src={logo}
             alt="Admin Logo"
@@ -123,7 +142,6 @@ function Dashboard() {
             }}
           />
         </Link>
-
         <ul>
           <li>
             <Link to="/dashboard" style={{ textDecoration: "none", color: "inherit" }}>
@@ -131,22 +149,34 @@ function Dashboard() {
             </Link>
           </li>
           <li>
-            <Link to="/dashboard/userinfo" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link
+              to="/dashboard/userinfo"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               회원관리
             </Link>
           </li>
           <li>
-            <Link to="/dashboard/objectinfo" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link
+              to="/dashboard/objectinfo"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               매물관리
             </Link>
           </li>
           <li>
-            <Link to="/dashboard/noticeinfo" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link
+              to="/dashboard/noticeinfo"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               공지사항
             </Link>
           </li>
           <li>
-            <Link to="/dashboard/mailinfo" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link
+              to="/dashboard/mailinfo"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
               문의관리
             </Link>
           </li>
@@ -155,7 +185,6 @@ function Dashboard() {
 
       {/* ===== 메인 ===== */}
       <div className="main">
-
         {/* ===== 상단 카드 3개 ===== */}
         <div className="card-wrapper">
           {/* 회원수 도넛 */}
@@ -177,17 +206,44 @@ function Dashboard() {
           {/* 매물수 도넛 */}
           <div className="chart-card">
             <h3>총 매물수</h3>
-            <ResponsiveContainer width="100%" height={180}>
-              <PieChart>
-                <Pie data={propertyData} dataKey="value" innerRadius={60} outerRadius={80}>
-                  {propertyData.map((entry, index) => (
-                    <Cell key={index} fill={COLORS[index]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="center-text">{totalProperties}개</div>
+            <div className="donut-wrapper">
+              <ResponsiveContainer width="100%" height={180}>
+                <PieChart>
+                  <Pie
+                    data={propertyData}
+                    dataKey="value"
+                    innerRadius={60}
+                    outerRadius={80}
+                  >
+                    {propertyData.map((entry, index) => (
+                      <Cell key={index} fill={COLORS[index]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="center-text">{totalProperties}개</div>
+            </div>
+            <div className="trade-filter-buttons">
+              {["ALL", "MONTHLY", "JEONSE", "SALE"].map((type) => (
+                <button
+                  key={type}
+                  className={selectedTradeType === type ? "active-btn" : ""}
+                  onClick={() => {
+                    setSelectedTradeType(type);
+                    setTotalProperties(tradeCounts[type]);
+                    setPropertyData([
+                      { name: "매물", value: tradeCounts[type] }
+                    ]);
+                  }}
+                >
+                  {type === "ALL" && "전체"}
+                  {type === "MONTHLY" && "월세"}
+                  {type === "JEONSE" && "전세"}
+                  {type === "SALE" && "매매"}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* 게시글 카드 */}
@@ -233,6 +289,7 @@ function Dashboard() {
             </ul>
           </div>
         </div>
+
         {/* ===== 최근 문의 메일 ===== */}
         <div className="mail-card">
           <h3>최근 문의 메일</h3>
@@ -247,14 +304,20 @@ function Dashboard() {
             </thead>
             <tbody>
               {mailData.length === 0 ? (
-                <tr><td colSpan="4">문의 메일이 없습니다.</td></tr>
+                <tr>
+                  <td colSpan="4">문의 메일이 없습니다.</td>
+                </tr>
               ) : (
                 mailData.map((mail, index) => (
                   <tr key={index}>
                     <td>{mail.id}</td>
                     <td>{mail.type}</td>
                     <td>{mail.date}</td>
-                    <td className={mail.status === "답변완료" ? "status-done" : "status-wait"}>
+                    <td
+                      className={
+                        mail.status === "답변완료" ? "status-done" : "status-wait"
+                      }
+                    >
                       {mail.status}
                     </td>
                   </tr>

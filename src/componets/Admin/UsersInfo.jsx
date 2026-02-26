@@ -88,7 +88,7 @@ function UsersInfo() {
 
       {/* ===== 메인 ===== */}
       <div className="main">
-        <h1 className="title">회원 관리</h1>
+        <h2 className="title">회원 관리</h2>
 
         {/* ===== 사용자 정보 카드 ===== */}
         <div className="chart-card" style={{ padding: "20px", overflowX: "auto" }}>

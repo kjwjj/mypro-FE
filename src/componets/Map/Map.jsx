@@ -24,7 +24,6 @@ function Map({ center, houses }) {
   useEffect(() => {
     if (!kakaoMap.current || !houses) return;
 
-    // 기존 마커 & infoWindow 제거
     markersRef.current.forEach((marker) => marker.setMap(null));
     infoWindowsRef.current.forEach((info) => info.close());
     markersRef.current = [];
@@ -32,6 +31,7 @@ function Map({ center, houses }) {
 
     houses.forEach((house) => {
       const geocoder = new window.kakao.maps.services.Geocoder();
+
       geocoder.addressSearch(house.address, (result, status) => {
         if (status === window.kakao.maps.services.Status.OK) {
           const position = new window.kakao.maps.LatLng(result[0].y, result[0].x);
@@ -42,19 +42,33 @@ function Map({ center, houses }) {
             title: house.name,
           });
 
-          // 인포윈도우 div 생성
+          // 🔥 가격 표시 로직 수정
+          let priceText = "가격 정보 없음";
+
+          if (house.listing) {
+            const { tradeType, deposit, rent, salePrice } = house.listing;
+
+            if (tradeType === "MONTHLY") {
+              priceText = `월세 ${deposit} / ${rent}`;
+            } else if (tradeType === "JEONSE") {
+              priceText = `전세 ${deposit}`;
+            } else if (tradeType === "SALE") {
+              priceText = `매매 ${salePrice}`;
+            }
+          }
+
           const content = document.createElement("div");
-          content.style.position = "relative"; // 닫기 버튼 위치 지정
+          content.style.position = "relative";
           content.style.padding = "8px";
           content.style.maxWidth = "220px";
           content.style.fontSize = "12px";
+
           content.innerHTML = `
             <strong>${house.name}</strong><br/>
             ${house.address}<br/>
-            가격: ${house.price}만 | 방: ${house.rooms}개 | ${house.type}<br/>
+            ${priceText}만원 | 방: ${house.rooms}개 | ${house.type}<br/>
           `;
 
-          // 닫기 버튼
           const closeBtn = document.createElement("button");
           closeBtn.textContent = "✕";
           closeBtn.style.cssText = `
@@ -77,13 +91,11 @@ function Map({ center, houses }) {
 
           const infoWindow = new window.kakao.maps.InfoWindow({ content });
 
-          // 마커 클릭 시 infoWindow 열기
           window.kakao.maps.event.addListener(marker, "click", () => {
             infoWindowsRef.current.forEach((info) => info.close());
             infoWindow.open(kakaoMap.current, marker);
           });
 
-          // 닫기 버튼 클릭
           closeBtn.addEventListener("click", () => infoWindow.close());
 
           markersRef.current.push(marker);
@@ -93,7 +105,6 @@ function Map({ center, houses }) {
     });
   }, [houses]);
 
-  // center 변경 시 지도 이동 + 확대
   useEffect(() => {
     if (!kakaoMap.current) return;
 
@@ -102,7 +113,7 @@ function Map({ center, houses }) {
     kakaoMap.current.panTo(moveLatLng);
   }, [center]);
 
-  return <div id="map" ref={mapRef} style={{ width: "100%", height: "100%" }} />;
+  return <div ref={mapRef} style={{ width: "100%", height: "100%" }} />;
 }
 
 export default Map;
