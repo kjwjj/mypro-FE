@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import logo from "../../assets/img/house.png";
-import { Table, Button, Pagination, PaginationItem, PaginationLink } from "reactstrap";
 import axios from "axios";
 import "./board.css"; // BoardList에 있는 css
 import { useNavigate } from "react-router-dom";
+import AdminSidebar from "./AdminSideBar";
 
 function NoticeInfo() {
   const [notices, setNotices] = useState([]);
@@ -34,55 +32,8 @@ function NoticeInfo() {
   return (
     <div className="admin-container">
       {/* ===== 사이드바 ===== */}
-      <div className="sidebar">
-        <Link to="/" className="logo-container" style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "20px 0",
-          flexDirection: "column",
-          textDecoration: "none", // 링크 밑줄 제거
-          color: "inherit", // 글자 색 유지
-        }}>
-          <img
-            src={logo}
-            alt="Admin Logo"
-            style={{
-              width: "200px",
-              height: "200px",
-              marginBottom: "8px",
-            }}
-          />
-        </Link>
+     <AdminSidebar />
 
-        <ul>
-          <li>
-            <Link to="/dashboard" style={{ textDecoration: "none", color: "inherit" }}>
-              대시보드
-            </Link>
-          </li>
-          <li>
-            <Link to="/dashboard/userinfo" style={{ textDecoration: "none", color: "inherit" }}>
-              회원관리
-            </Link>
-          </li>
-          <li>
-            <Link to="/dashboard/objectinfo" style={{ textDecoration: "none", color: "inherit" }}>
-              매물관리
-            </Link>
-          </li>
-          <li>
-            <Link to="/dashboard/noticeinfo" style={{ textDecoration: "none", color: "inherit" }}>
-              공지사항
-            </Link>
-          </li>
-          <li>
-            <Link to="/dashboard/mailinfo" style={{ textDecoration: "none", color: "inherit" }}>
-              문의관리
-            </Link>
-          </li>
-        </ul>
-      </div>
    {/* ===== 메인 영역 ===== */}
       <div className="main">
         <div className="d-flex justify-content-between align-items-center mb-3">
