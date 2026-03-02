@@ -87,7 +87,6 @@ function Navbar() {
             <li className="nav-item"><Link className="nav-link" to="/newslist">뉴스</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/boardlist">게시판</Link></li>
             <li className="nav-item"><Link className="nav-link" to="/service">고객지원</Link></li>
-            <li className="nav-item"><Link className="nav-link" to="/about">About</Link></li>
           </ul>
           <ul className="navbar-nav ms-auto">
             {userName ? (
