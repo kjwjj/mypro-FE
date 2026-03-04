@@ -9,7 +9,7 @@ import axios from "axios";
 import MyProfile from './MyProfile'
 import MyDashBoard from './MyDashBoard'
 import MyQuestion from "./MYQuestion"
-import MyRatePlan from "./MyRatePlan";
+import MyObject from "./MyObject";
 
 function MyPageForm() {
   const location = useLocation();
@@ -67,8 +67,8 @@ function MyPageForm() {
         return <MyDashBoard />;
       case "myquestion":
         return <MyQuestion />;
-      case "myrateplan":
-        return <MyRatePlan />;
+      case "myobject":
+        return <MyObject />;
       default:
         return <MyProfile />;
     }
@@ -82,8 +82,8 @@ function MyPageForm() {
         return "내가 작성한 게시물";
       case "myquestion":
         return "문의함";
-      case "myrateplan":
-        return "요금제";
+      case "myobject":
+        return "내 매물";
       default:
         return "";
     }
@@ -167,12 +167,12 @@ function MyPageForm() {
           <NavItem style={{ flex: 1 }}>
             <NavLink
               className={classnames("py-3  text-center", {
-                active: activeTab === "myrateplan",
+                active: activeTab === "myobject",
               })}
-              onClick={() => setActiveTab("myrateplan")}
+              onClick={() => setActiveTab("myobject")}
               style={{ cursor: "pointer", width: "100%" }}
             >
-              요금제
+              내 매물
             </NavLink>
           </NavItem>
         </Nav>

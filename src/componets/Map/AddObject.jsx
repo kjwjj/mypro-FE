@@ -14,9 +14,19 @@ function AddObject({ onClose, onAdded = () => { } }) {
   const [salePrice, setSalePrice] = useState("");
   const [maintenanceFee, setMaintenanceFee] = useState("");
   const [availableFrom, setAvailableFrom] = useState("");
+  const [context, setContext] = useState("");
 
   const [images, setImages] = useState([]);
   const [previews, setPreviews] = useState([]);
+
+  // ✅ 주소 검색 함수 추가
+  const handleAddressSearch = () => {
+    new window.daum.Postcode({
+      oncomplete: function (data) {
+        setAddress(data.roadAddress || data.jibunAddress);
+      },
+    }).open();
+  };
 
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
@@ -71,7 +81,7 @@ function AddObject({ onClose, onAdded = () => { } }) {
       formData.append("address", address);
       formData.append("type", type);
       formData.append("rooms", rooms ? Number(rooms) : 0);
-
+      formData.append("context", context);
       images.forEach((img) => formData.append("images", img));
 
       const houseRes = await axios.post(
@@ -130,12 +140,30 @@ function AddObject({ onClose, onAdded = () => { } }) {
         />
       </Row>
 
-      <Row label="주소">
+      {/* <Row label="주소">
         <input
           className="add-object-input"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
         />
+      </Row> */}
+      {/* ✅ 주소 입력 부분 변경 */}
+      <Row label="주소">
+        <div style={{ display: "flex", gap: "8px" }}>
+          <input
+            className="add-object-input"
+            value={address}
+            readOnly
+            placeholder="주소 검색 버튼을 눌러주세요"
+          />
+          <button
+            type="button"
+            className="btn btn-outline-secondary btn-sm"
+            onClick={handleAddressSearch}
+          >
+            검색
+          </button>
+        </div>
       </Row>
 
       <Row label="주거 형태">
@@ -164,7 +192,16 @@ function AddObject({ onClose, onAdded = () => { } }) {
         </select>
       </Row>
 
-      <hr />
+      <Row label="상세 설명">
+        <textarea
+          className="add-object-textarea"
+          value={context}
+          onChange={(e) => setContext(e.target.value)}
+          rows={4}
+        />
+      </Row>
+
+
 
       <Row label="거래 유형">
         <select

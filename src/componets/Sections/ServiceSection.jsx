@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 function ServiceSection() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
+  const [popularHouses, setPopularHouses] = useState([]);
 
   const staticNewsData = [
     { id: 1, source: "구글", title: "글로벌 부동산 데이터 시장 확대", date: "2026-01-26", link: "#" },
@@ -55,6 +56,12 @@ function ServiceSection() {
         console.error("공지사항 불러오기 실패:", err);
         setNoticeData([]);
       });
+
+    // ===== 🔥 인기매물 추가 =====
+    axios.get("http://localhost:8080/api/houses/popular")
+      .then(res => setPopularHouses(res.data))
+      .catch(err => console.error("인기매물 불러오기 실패:", err));
+
   }, [token]);
 
   // 페이지네이션
@@ -88,27 +95,29 @@ function ServiceSection() {
         </Row>
 
         <Row>
-          {/* 쳇봇 */}
+          {/* 인기매물 */}
           <Col md="4">
             <Card className="shadow border-0" style={cardStyle}>
-              <CardBody
-                className="text-center d-flex flex-column justify-content-center"
-                style={{
-                  pointerEvents: isLoggedIn && isSubscribed ? "auto" : "none",
-                  textAlign: "center",
-                  color: "black",
-                  backgroundColor: isLoggedIn && isSubscribed ? "white" : "#f8f9fa",
-                }}
-              >
-                <i className="ni ni-delivery-fast text-primary display-4 mb-3" />
-                <h5 className="mt-2">쳇봇</h5>
-                {isLoggedIn && isSubscribed ? (
-                  <p className="text-muted">여러 이사업체 견적을 한 번에 비교</p>
-                ) : (
-                  <p className="text-muted mb-3">
-                    로그인 후 구독 요금 결제 시 이용 가능합니다.
-                  </p>
-                )}
+              <CardBody style={contentStyle}>
+                <h5 className="text-center mb-3">인기매물</h5>
+
+                {popularHouses.map((house) => (
+                  <div
+                    key={house.id}
+                    className="mb-2"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate(`/house/${house.id}`)}
+                  >
+                    <Badge color="danger" pill className="me-1">
+                      인기
+                    </Badge>
+                    <span className="fw-bold text-dark">{house.name}</span>
+                    <br />
+                    <small className="text-muted">
+                      조회수 {house.viewCount}
+                    </small>
+                  </div>
+                ))}
               </CardBody>
             </Card>
           </Col>

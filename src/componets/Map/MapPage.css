@@ -156,3 +156,57 @@
   color: white;
   border-color: #007bff;
 }
+
+.detail-panel {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 400px;
+  height: 100%;
+  background: white;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.2);
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.close-btn {
+  float: right;
+  border: none;
+  background: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.detail-img {
+  width: 100%;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+/* ❤️ 좋아요 영역 */
+.like-area {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.heart {
+  font-size: 22px;
+  cursor: pointer;
+  color: #ccc;
+  transition: 0.2s;
+}
+
+.heart:hover {
+  transform: scale(1.2);
+}
+
+.heart.liked {
+  color: red;
+}
+
+.like-count {
+  font-size: 14px;
+}

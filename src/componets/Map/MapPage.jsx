@@ -4,6 +4,7 @@ import axios from "axios";
 import Map from "./Map";
 import AddObject from "./AddObject";
 import EditObject from "./EditObject";
+import HouseDetail from "./HouseDetail";
 import "./MapPage.css";
 
 function MapPage() {
@@ -16,6 +17,9 @@ function MapPage() {
 
   const [showEdit, setShowEdit] = useState(false);
   const [editHouse, setEditHouse] = useState(null);
+
+  const [showDetail, setShowDetail] = useState(false);
+  const [detailHouse, setDetailHouse] = useState(null);
 
   const [selectedHouse, setSelectedHouse] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -33,7 +37,17 @@ function MapPage() {
   // 매물 불러오기
   const fetchHouses = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/houses");
+      const token = localStorage.getItem("token");
+
+      const res = await axios.get(
+        "http://localhost:8080/api/houses",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
       setHouses(res.data);
       setFilteredHouses(res.data);
     } catch (error) {
@@ -43,10 +57,48 @@ function MapPage() {
 
   useEffect(() => { fetchHouses(); }, []);
 
+  // ===============================
+  // ❤️ 좋아요 토글
+  // ===============================
+  const handleLike = async (houseId) => {
+    try {
+      const token = localStorage.getItem("token");
+
+      await axios.post(
+        `http://localhost:8080/api/houses/${houseId}/like`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setHouses((prev) =>
+        prev.map((house) =>
+          house.id === houseId
+            ? {
+              ...house,
+              likedByMe: !house.likedByMe,
+              likeCount: house.likedByMe
+                ? house.likeCount - 1
+                : house.likeCount + 1,
+            }
+            : house
+        )
+      );
+
+    } catch (err) {
+      console.error("좋아요 실패", err);
+      alert("로그인이 필요합니다.");
+    }
+  };
+
   // 필터 적용
   useEffect(() => {
     let filtered = [...houses];
-    if (filterType !== "전체") filtered = filtered.filter((h) => h.type === filterType);
+    if (filterType !== "전체")
+      filtered = filtered.filter((h) => h.type === filterType);
     if (filterRooms !== "전체") {
       if (filterRooms === "3+") {
         filtered = filtered.filter((h) => h.rooms >= 4);
@@ -89,14 +141,40 @@ function MapPage() {
   }, [houses, filterType, filterRooms, filterTradeType, priceRange, rentRange]);
 
   // 매물 선택
-  const moveToAddress = (house) => {
+  const moveToAddress = async (house) => {
     if (!window.kakao) return;
+
     const geocoder = new window.kakao.maps.services.Geocoder();
-    geocoder.addressSearch(house.address, (result, status) => {
+
+    geocoder.addressSearch(house.address, async (result, status) => {
       if (status === window.kakao.maps.services.Status.OK) {
-        setCenter({ lat: Number(result[0].y), lng: Number(result[0].x) });
-        setSelectedHouse(house);
-      } else alert("주소를 찾을 수 없습니다.");
+
+        // ✅ 지도 이동
+        setCenter({
+          lat: Number(result[0].y),
+          lng: Number(result[0].x)
+        });
+
+        try {
+          // ✅ 조회수 증가
+          await axios.patch(
+            `http://localhost:8080/api/houses/${house.id}/view`
+          );
+        } catch (e) {
+          console.error("조회수 증가 실패");
+        }
+
+        // ✅ 상세 패널 열기
+        setDetailHouse(house);
+        setShowDetail(true);
+
+        // 다른 패널 닫기
+        setShowAdd(false);
+        setShowEdit(false);
+
+      } else {
+        alert("주소를 찾을 수 없습니다.");
+      }
     });
   };
 
@@ -269,6 +347,19 @@ function MapPage() {
                           : `매매 ${house.listing.salePrice}`
                       : "가격 정보 없음"}
                   </span>
+                  {/* ❤️ 좋아요 영역 */}
+                  <div className="like-area">
+                    <span
+                      className={`heart ${house.likedByMe ? "liked" : ""}`}
+                      onClick={(e) => {
+                        e.stopPropagation();   
+                        handleLike(house.id);
+                      }}
+                    >
+                      ♥
+                    </span>
+                    <span className="like-count">{house.likeCount}</span>
+                  </div>
                 </div>
 
                 {/* 🔹수정/삭제 버튼 */}
@@ -317,6 +408,15 @@ function MapPage() {
             +
           </button>
         </div>
+      )}
+
+      {/* 상세 */}
+      {showDetail && detailHouse && (
+        <HouseDetail
+          house={detailHouse}
+          onClose={() => setShowDetail(false)}
+          onBack={() => setShowDetail(false)}
+        />
       )}
 
       {/* AddObject 모달 */}

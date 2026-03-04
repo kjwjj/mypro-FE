@@ -7,6 +7,8 @@
   border: 1px solid #ddd;
   border-radius: 8px;
   background-color: #fff;
+  max-height: 80vh;/* 화면 기준 높이 제한 */
+  overflow-y: auto;
 }
 
 .add-object-container h2 {
@@ -56,7 +58,7 @@
   position: absolute;
   top: 4px;
   right: 4px;
-  background: rgba(0,0,0,0.6);
+  background: rgba(0, 0, 0, 0.6);
   color: #fff;
   border: none;
   border-radius: 50%;
@@ -70,4 +72,13 @@
   justify-content: flex-end;
   gap: 10px;
   margin-top: 30px;
+}
+
+.add-object-textarea {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  resize: vertical;
+  font-size: 14px;
 }
