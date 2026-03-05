@@ -259,21 +259,21 @@ function HeroSection() {
   const slides = [
     {
       id: 1,
-      img: "/src/assets/img/model.jpg",
+      img: "/img/model.jpg",
       title: "최신 매물 추천",
       desc: "AI가 추천하는 내 집 맞춤 매물을 확인하세요",
       btn: "매물 보기",
     },
     {
       id: 2,
-      img: "/src/assets/img/moving.jpg",
+      img: "/img/moving.jpg",
       title: "대출 비교",
       desc: "조건을 입력하고 대출을 비교 받은세요",
       btn: "비교 받기",
     },
     {
       id: 3,
-      img: "/src/assets/img/favicon.jpg",
+      img: "/img/favicon.jpg",
       title: "주거 추천 서비스",
       desc: "내 생활 패턴에 맞는 최적의 주거지를 추천받으세요",
       btn: "추천 보기",

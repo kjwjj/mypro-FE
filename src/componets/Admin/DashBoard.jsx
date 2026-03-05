@@ -24,32 +24,34 @@ function Dashboard() {
     JEONSE: 0,
     SALE: 0,
   });
-  const [userData, setUserData] = useState([
-    { name: "회원", value: 0 }
-  ]);
+  const [userData, setUserData] = useState([{ name: "회원", value: 0 }]);
   const [totalBoards, setTotalBoards] = useState(0);
   const [totalProperties, setTotalProperties] = useState(0);
-  const [propertyData, setPropertyData] = useState([
-    { name: "매물", value: 0 }
-  ]);
-  const [mailData, setMailData] = useState([]); // 서버에서 가져올 문의 데이터
+  const [propertyData, setPropertyData] = useState([]);
+  const [houses, setHouses] = useState([]); // 전체 매물
+  const [mailData, setMailData] = useState([]);
   const [noticeList, setNoticeList] = useState([]);
 
-  
+  // 🔵 OpenAI 사용량
+  const [openaiUsage, setOpenaiUsage] = useState({
+    requests: 0,
+    inputTokens: 0,
+    outputTokens: 0,
+  });
 
-  // 로그인 안됨 → 로그인 페이지로 이동
+
+  // 로그인 체크
   if (!token) {
     alert("로그인이 필요합니다.");
     return <Navigate to="/login" replace />;
   }
 
-  // 로그인은 됐지만 관리자 아님 → 홈으로 이동
   if (role !== "ROLE_ADMIN") {
     alert("관리자만 접근 가능합니다.");
     return <Navigate to="/" replace />;
   }
 
-  // ===== 총 데이터 가져오기 =====
+  // ===== 데이터 가져오기 =====
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -65,35 +67,34 @@ function Dashboard() {
         const boardRes = await axios.get("http://localhost:8080/api/boards/count", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const boardCount = boardRes.data;
-        setTotalBoards(boardCount);
+        setTotalBoards(boardRes.data);
 
         // 전체 매물 가져오기
         const houseRes = await axios.get("http://localhost:8080/api/houses", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        const houses = houseRes.data;
+        const housesData = houseRes.data;
+        setHouses(housesData);
 
+        // 거래 유형별 개수 계산
         const counts = {
-          ALL: houses.length,
-          MONTHLY: houses.filter((h) => h.listing?.tradeType === "MONTHLY").length,
-          JEONSE: houses.filter((h) => h.listing?.tradeType === "JEONSE").length,
-          SALE: houses.filter((h) => h.listing?.tradeType === "SALE").length,
+          ALL: housesData.length,
+          MONTHLY: housesData.filter((h) => h.listing?.tradeType === "MONTHLY").length,
+          JEONSE: housesData.filter((h) => h.listing?.tradeType === "JEONSE").length,
+          SALE: housesData.filter((h) => h.listing?.tradeType === "SALE").length,
         };
-
         setTradeCounts(counts);
-        setTotalProperties(counts.ALL);
-        setPropertyData([
-          { name: "매물", value: counts.ALL }
-        ]);
 
-        // 공지사항 데이터 가져오기 (예: 최신 3개)
+        // 초기 PieChart: 전체
+        updatePropertyData(housesData, "ALL");
+
+        // 공지사항 (최신 3개)
         const noticeRes = await axios.get("http://localhost:8080/api/notices?page=0&size=3", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setNoticeList(noticeRes.data.content); // Page 객체라면 content 안에 데이터 있음
+        setNoticeList(noticeRes.data.content);
 
-        // 최근 문의 메일 (전체)
+        // 최근 문의 메일
         const mailRes = await axios.get("http://localhost:8080/api/qna/all", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -104,6 +105,21 @@ function Dashboard() {
           status: qna.answerStatus,
         }));
         setMailData(mails);
+
+
+        // 🔵 OpenAI 사용량 가져오기
+        const usageRes = await axios.get(
+          "http://localhost:8080/api/openai/usage",
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        const usageData = usageRes.data.data?.[0];
+
+        setOpenaiUsage({
+          requests: usageData?.num_requests || 0,
+          inputTokens: usageData?.input_tokens || 0,
+          outputTokens: usageData?.output_tokens || 0,
+        });
       } catch (err) {
         console.error(err);
         alert("대시보드 데이터를 가져오는데 실패했습니다.");
@@ -113,14 +129,36 @@ function Dashboard() {
     fetchData();
   }, [token]);
 
-  const COLORS = ["#3b82f6", "#e2e8f0"];
+  // ===== PieChart 업데이트 함수 =====
+  const updatePropertyData = (housesArray, tradeType) => {
+    let filtered = housesArray;
+    if (tradeType !== "ALL") {
+      const key =
+        tradeType === "MONTHLY"
+          ? "월세"
+          : tradeType === "JEONSE"
+            ? "전세"
+            : "매매";
+      filtered = housesArray.filter((h) => h.listing?.tradeType === tradeType);
+    }
+
+    // 타입별 개수 (아파트, 빌라, 주택)
+    const typeCounts = {};
+    filtered.forEach((h) => {
+      const type = h.type || "기타";
+      typeCounts[type] = (typeCounts[type] || 0) + 1;
+    });
+
+    const data = Object.entries(typeCounts).map(([name, value]) => ({ name, value }));
+    setPropertyData(data);
+    setTotalProperties(filtered.length);
+  };
+
+  const COLORS = ["#3b82f6", "#f97316", "#22c55e", "#eab308", "#8b5cf6", "#ec4899"];
 
   return (
     <div className="admin-container">
-      {/* ===== 사이드바 ===== */}
       <AdminSidebar />
-
-      {/* ===== 메인 ===== */}
       <div className="main">
         {/* ===== 상단 카드 3개 ===== */}
         <div className="card-wrapper">
@@ -131,7 +169,7 @@ function Dashboard() {
               <PieChart>
                 <Pie data={userData} dataKey="value" innerRadius={60} outerRadius={80}>
                   {userData.map((entry, index) => (
-                    <Cell key={index} fill={COLORS[index]} />
+                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -143,24 +181,24 @@ function Dashboard() {
           {/* 매물수 도넛 */}
           <div className="chart-card">
             <h3>총 매물수</h3>
-            <div className="donut-wrapper">
-              <ResponsiveContainer width="100%" height={180}>
-                <PieChart>
-                  <Pie
-                    data={propertyData}
-                    dataKey="value"
-                    innerRadius={60}
-                    outerRadius={80}
-                  >
-                    {propertyData.map((entry, index) => (
-                      <Cell key={index} fill={COLORS[index]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="center-text">{totalProperties}개</div>
-            </div>
+            <ResponsiveContainer width="100%" height={180}>
+              <PieChart>
+                <Pie
+                  data={propertyData}
+                  dataKey="value"
+                  innerRadius={60}
+                  outerRadius={80}
+                  nameKey="name"
+                // label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                >
+                  {propertyData.map((entry, index) => (
+                    <Cell key={index} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip formatter={(value, name) => [`${value}개`, name]} />
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="center-text">{totalProperties}개</div>
             <div className="trade-filter-buttons">
               {["ALL", "MONTHLY", "JEONSE", "SALE"].map((type) => (
                 <button
@@ -168,10 +206,7 @@ function Dashboard() {
                   className={selectedTradeType === type ? "active-btn" : ""}
                   onClick={() => {
                     setSelectedTradeType(type);
-                    setTotalProperties(tradeCounts[type]);
-                    setPropertyData([
-                      { name: "매물", value: tradeCounts[type] }
-                    ]);
+                    updatePropertyData(houses, type);
                   }}
                 >
                   {type === "ALL" && "전체"}
@@ -192,20 +227,21 @@ function Dashboard() {
 
         {/* ===== 중간 카드 2개 ===== */}
         <div className="bottom-wrapper">
+          {/* 🔵 OpenAI API 사용량 */}
           <div className="bottom-card">
-            <h3>API 사용량</h3>
+            <h3>OpenAI API 사용량</h3>
             <ul>
               <li>
-                <span>이번 달 사용량</span>
-                <span>12,450 tokens</span>
+                <span>요청 수</span>
+                <span>{openaiUsage.requests}</span>
               </li>
               <li>
-                <span>오늘 사용량</span>
-                <span>1,230 tokens</span>
+                <span>입력 토큰</span>
+                <span>{openaiUsage.inputTokens}</span>
               </li>
               <li>
-                <span>예상 비용</span>
-                <span>$8.23</span>
+                <span>출력 토큰</span>
+                <span>{openaiUsage.outputTokens}</span>
               </li>
             </ul>
           </div>

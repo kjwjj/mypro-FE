@@ -26,9 +26,30 @@ function SignUpForm() {
   const [codeSent, setCodeSent] = useState(false);
   const [verified, setVerified] = useState(false);
   const [timeLeft, setTimeLeft] = useState(180); // 3분
+  // 📱 전화번호 자동 하이픈 
+  const formatPhoneNumber = (value) => {
+    const numbers = value.replace(/[^0-9]/g, "");
+
+    if (numbers.length < 4)
+      return numbers;
+
+    if (numbers.length < 8)
+      return `${numbers.slice(0, 3)}-${numbers.slice(3)}`;
+
+    return `${numbers.slice(0, 3)}-${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    if (name === "phone") {
+      setForm({
+        ...form,
+        phone: formatPhoneNumber(value),
+      });
+      return;
+    }
+
     setForm({ ...form, [name]: value });
   };
 
@@ -183,7 +204,10 @@ function SignUpForm() {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(form),
+          body: JSON.stringify({
+            ...form,
+            phone: form.phone.replace(/-/g, ""), // 서버에는 하이픈 제거 
+          }),
         }
       );
 
@@ -348,6 +372,7 @@ function SignUpForm() {
               name="phone"
               value={form.phone}
               onChange={handleChange}
+              maxLength={13}
               required
             />
             <label>휴대폰 번호</label>
