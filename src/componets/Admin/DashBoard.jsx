@@ -107,19 +107,19 @@ function Dashboard() {
         setMailData(mails);
 
 
-        // 🔵 OpenAI 사용량 가져오기
-        const usageRes = await axios.get(
-          "http://localhost:8080/api/openai/usage",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        // // 🔵 OpenAI 사용량 가져오기
+        // const usageRes = await axios.get(
+        //   "http://localhost:8080/api/openai/usage",
+        //   { headers: { Authorization: `Bearer ${token}` } }
+        // );
 
-        const usageData = usageRes.data.data?.[0];
+        // const usageData = usageRes.data.data?.[0];
 
-        setOpenaiUsage({
-          requests: usageData?.num_requests || 0,
-          inputTokens: usageData?.input_tokens || 0,
-          outputTokens: usageData?.output_tokens || 0,
-        });
+        // setOpenaiUsage({
+        //   requests: usageData?.num_requests || 0,
+        //   inputTokens: usageData?.input_tokens || 0,
+        //   outputTokens: usageData?.output_tokens || 0,
+        // });
       } catch (err) {
         console.error(err);
         alert("대시보드 데이터를 가져오는데 실패했습니다.");
@@ -228,7 +228,7 @@ function Dashboard() {
         {/* ===== 중간 카드 2개 ===== */}
         <div className="bottom-wrapper">
           {/* 🔵 OpenAI API 사용량 */}
-          <div className="bottom-card">
+          {/* <div className="bottom-card">
             <h3>OpenAI API 사용량</h3>
             <ul>
               <li>
@@ -244,7 +244,7 @@ function Dashboard() {
                 <span>{openaiUsage.outputTokens}</span>
               </li>
             </ul>
-          </div>
+          </div> */}
 
           <div className="bottom-card">
             <h3>공지사항</h3>

@@ -93,7 +93,7 @@ function LoginForm({ message }) {
               로그인
             </Button>
 
-            <small className="text-muted d-block text-center mb-2">
+            {/* <small className="text-muted d-block text-center mb-2">
               Sign in with
             </small>
 
@@ -125,7 +125,7 @@ function LoginForm({ message }) {
                   K 카카오
                 </Button>
               </Col>
-            </Row>
+            </Row> */}
           </Form>
         </CardBody>
       </Card>

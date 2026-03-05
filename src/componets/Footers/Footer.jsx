@@ -32,7 +32,7 @@ function Footer() {
             <ul className="list-unstyled small">
               <li><Link to="/loan" className="text-muted text-decoration-none">대출 </Link></li>
               <li><Link to="/map" className="text-muted text-decoration-none"> 매물 </Link></li>
-              <li><a href="#" className="text-muted text-decoration-none">주거 분석</a></li>
+              <li><Link to="/recommend" className="text-muted text-decoration-none">주거 분석</Link></li>
             </ul>
           </div>
 

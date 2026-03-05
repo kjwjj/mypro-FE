@@ -207,7 +207,7 @@ function MapPage() {
       </div>
 
       {/* 🔹 필터 + 매물 목록 영역: 수정 모달 열리면 숨김 */}
-      {!showAdd && !showEdit && (
+      {!showAdd && !showEdit && !showDetail  &&(
         <div className="filter-area">
           <h4>매물 필터</h4>
 

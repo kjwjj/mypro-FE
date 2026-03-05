@@ -1,3 +1,129 @@
+// import React, { useState, useEffect } from "react";
+// import {
+//   Container,
+//   Row,
+//   Col,
+//   Card,
+//   CardHeader,
+//   CardBody,
+//   Table,
+//   Button,
+//   Pagination,
+//   PaginationItem,
+//   PaginationLink,
+// } from "reactstrap";
+// import { useNavigate } from "react-router-dom";
+// import axios from "axios";
+// import "./board.css";
+
+// function BoardList() {
+//   const navigate = useNavigate();
+
+//   const [posts, setPosts] = useState([]);
+//   const [page, setPage] = useState(0); // ⚠ Spring은 0부터 시작
+//   const [totalPages, setTotalPages] = useState(0);
+  
+//   const token = localStorage.getItem("token"); // 로그인 시 저장한 키와 동일하게
+//   // ✅ 백엔드에서 데이터 가져오기
+//   useEffect(() => {
+//     axios
+//       .get(`http://localhost:8080/api/boards?page=${page}&size=10`)
+//       .then((res) => {
+//         setPosts(res.data.content);
+//         setTotalPages(res.data.totalPages);
+//       })
+//       .catch((err) => {
+//         console.error("게시글 불러오기 실패", err);
+//       });
+//   }, [page]);
+
+//   return (
+//     <main className="board-page">
+//       <section className="section section-lg">
+//         <Container className="pt-5">
+//           <Row className="justify-content-center">
+//             <Col lg="10">
+//               <Card className="shadow board-card">
+//                 <CardHeader className="bg-white d-flex justify-content-between align-items-center">
+//                   <h4 className="mb-0">게시판</h4>
+//                   <Button
+//                     color="primary"
+//                     size="sm"
+//                     onClick={() => {
+//                       if (!token) {
+//                         alert("로그인이 필요합니다.");
+//                         return;
+//                       }
+
+//                       navigate("/addboard");
+//                     }}
+//                   >
+//                     글쓰기
+//                   </Button>
+//                 </CardHeader>
+
+//                 <CardBody className="p-0">
+//                   <Table responsive hover className="mb-0">
+//                     <thead className="thead-light">
+//                       <tr>
+//                         <th style={{ width: "10%" }}>번호</th>
+//                         <th>제목</th>
+//                         <th style={{ width: "15%" }}>작성자</th>
+//                         <th style={{ width: "15%" }}>작성일</th>
+//                         <th style={{ width: "10%" }}>조회</th>
+//                       </tr>
+//                     </thead>
+//                     <tbody>
+//                       {posts.map((post) => (
+//                         <tr key={post.id}>
+//                           <td>{post.id}</td>
+//                           <td
+//                             style={{ cursor: "pointer", color: "#007bff" }}
+//                             onClick={() => navigate(`/boardlist/${post.id}`)}
+//                           >
+//                             {post.title}
+//                           </td>
+//                           <td>{post.author}</td>
+//                           <td>
+//                             {post.createdAt
+//                               ? post.createdAt.substring(0, 10)
+//                               : ""}
+//                           </td>
+//                           <td>{post.views}</td>
+//                         </tr>
+//                       ))}
+//                     </tbody>
+//                   </Table>
+
+//                   {/* ✅ 서버 기반 페이지네이션 */}
+//                   <div className="d-flex justify-content-center my-4">
+//                     <Pagination>
+//                       {[...Array(totalPages)].map((_, index) => (
+//                         <PaginationItem
+//                           key={index}
+//                           active={page === index}
+//                         >
+//                           <PaginationLink
+//                             onClick={() => setPage(index)}
+//                           >
+//                             {index + 1}
+//                           </PaginationLink>
+//                         </PaginationItem>
+//                       ))}
+//                     </Pagination>
+//                   </div>
+
+//                 </CardBody>
+//               </Card>
+//             </Col>
+//           </Row>
+//         </Container>
+//       </section>
+//     </main>
+//   );
+// }
+
+// export default BoardList;
 import React, { useState, useEffect } from "react";
 import {
   Container,
@@ -22,8 +148,12 @@ function BoardList() {
   const [posts, setPosts] = useState([]);
   const [page, setPage] = useState(0); // ⚠ Spring은 0부터 시작
   const [totalPages, setTotalPages] = useState(0);
-  
-  const token = localStorage.getItem("token"); // 로그인 시 저장한 키와 동일하게
+
+  // 로그인 정보 가져오기
+  const token = localStorage.getItem("token"); 
+  const currentUserId = Number(localStorage.getItem("userId")); 
+  const currentUserIsAdmin = localStorage.getItem("isAdmin") === "true";
+
   // ✅ 백엔드에서 데이터 가져오기
   useEffect(() => {
     axios
@@ -37,6 +167,27 @@ function BoardList() {
       });
   }, [page]);
 
+  // 삭제 핸들러
+  const handleDelete = (id) => {
+    if (!token) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    axios
+      .delete(`http://localhost:8080/api/boards/${id}`, {
+        data: { userId: currentUserId, isAdmin: currentUserIsAdmin },
+      })
+      .then(() => {
+        alert("삭제 완료");
+        setPosts(posts.filter((post) => post.id !== id));
+      })
+      .catch((err) => {
+        console.error("삭제 실패", err);
+        alert("삭제 권한이 없습니다.");
+      });
+  };
+
   return (
     <main className="board-page">
       <section className="section section-lg">
@@ -45,7 +196,7 @@ function BoardList() {
             <Col lg="10">
               <Card className="shadow board-card">
                 <CardHeader className="bg-white d-flex justify-content-between align-items-center">
-                  <h4 className="mb-0">공지 / 자유게시판</h4>
+                  <h4 className="mb-0">게시판</h4>
                   <Button
                     color="primary"
                     size="sm"
@@ -54,7 +205,6 @@ function BoardList() {
                         alert("로그인이 필요합니다.");
                         return;
                       }
-
                       navigate("/addboard");
                     }}
                   >
@@ -71,27 +221,52 @@ function BoardList() {
                         <th style={{ width: "15%" }}>작성자</th>
                         <th style={{ width: "15%" }}>작성일</th>
                         <th style={{ width: "10%" }}>조회</th>
+                        <th style={{ width: "20%" }}>관리</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {posts.map((post) => (
-                        <tr key={post.id}>
-                          <td>{post.id}</td>
-                          <td
-                            style={{ cursor: "pointer", color: "#007bff" }}
-                            onClick={() => navigate(`/boardlist/${post.id}`)}
-                          >
-                            {post.title}
-                          </td>
-                          <td>{post.author}</td>
-                          <td>
-                            {post.createdAt
-                              ? post.createdAt.substring(0, 10)
-                              : ""}
-                          </td>
-                          <td>{post.views}</td>
-                        </tr>
-                      ))}
+                      {posts.map((post) => {
+                        const isAuthor = post.authorId === currentUserId;
+                        const isAdmin = currentUserIsAdmin;
+
+                        return (
+                          <tr key={post.id}>
+                            <td>{post.id}</td>
+                            <td
+                              style={{ cursor: "pointer", color: "#007bff" }}
+                              onClick={() => navigate(`/boardlist/${post.id}`)}
+                            >
+                              {post.title}
+                            </td>
+                            <td>{post.author}</td>
+                            <td>{post.createdAt?.substring(0, 10)}</td>
+                            <td>{post.views}</td>
+                            <td>
+                              {isAuthor && (
+                                <Button
+                                  size="sm"
+                                  color="warning"
+                                  onClick={() =>
+                                    navigate(`/board/edit/${post.id}`)
+                                  }
+                                  className="me-2"
+                                >
+                                  수정
+                                </Button>
+                              )}
+                              {(isAuthor || isAdmin) && (
+                                <Button
+                                  size="sm"
+                                  color="danger"
+                                  onClick={() => handleDelete(post.id)}
+                                >
+                                  삭제
+                                </Button>
+                              )}
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </Table>
 
@@ -99,20 +274,14 @@ function BoardList() {
                   <div className="d-flex justify-content-center my-4">
                     <Pagination>
                       {[...Array(totalPages)].map((_, index) => (
-                        <PaginationItem
-                          key={index}
-                          active={page === index}
-                        >
-                          <PaginationLink
-                            onClick={() => setPage(index)}
-                          >
+                        <PaginationItem key={index} active={page === index}>
+                          <PaginationLink onClick={() => setPage(index)}>
                             {index + 1}
                           </PaginationLink>
                         </PaginationItem>
                       ))}
                     </Pagination>
                   </div>
-
                 </CardBody>
               </Card>
             </Col>
